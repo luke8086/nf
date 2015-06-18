@@ -23,7 +23,7 @@ enum {
 };
 
 typedef uint64_t size_t;
-typedef uint64_t nf_cell_t;
+typedef int64_t nf_cell_t;
 
 /* interpreter tokens */
 
