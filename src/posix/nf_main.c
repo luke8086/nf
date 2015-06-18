@@ -17,52 +17,8 @@
 #include "../nf_common.h"
 
 /* local functions */
-static void nf_display_prompt(struct nf_machine *m);
-static int nf_interpret(struct nf_machine *m, int intv);
-
-/* display command line prompt */
-static void
-nf_display_prompt(struct nf_machine *m)
-{
-    /*
-    nf_cell_t *c;
-    int n = 5;
-
-    // print top row
-    nf_printf(".-----------------------------------");
-    nf_printf("-----------------------------------------\n");
-    nf_printf("| ");
-
-    // handle empty stack
-    if (m->data_sp == m->data_stack) {
-
-        nf_printf("<empty>");
-
-    // display stack contents
-    } else {
-
-        // select at no more than n top items
-        c = m->data_sp - n;
-        if (c < m->data_stack) {
-            c = m->data_stack;
-        }
-
-        // print stack elements
-        while (c < m->data_sp) {
-            nf_printf("%ld ", *c++);
-        }
-
-    }
-
-    // print bottom row
-    nf_printf("\n");
-    nf_printf("`-- >>> ");
-    */
-    if (m->state == NF_STATE_INTERPRET)
-        nf_printf(">>> ");
-    else
-        nf_printf("... ");
-}
+static int nf_interpret_int(struct nf_machine *m);
+static int nf_interpret_file(struct nf_machine *m);
 
 /* interactive interpreter loop */
 static int
