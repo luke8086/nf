@@ -1,6 +1,6 @@
 ### nf ###
 
-Minimal programming language, designed as an interactive environment for my [os/64](https://bitbucket.org/qx89l4/os64). Inspired by, but not compatible with, Forth.  Easily portable to different platforms.  Main characteristics: imperative, stack-based, interpreted, interactive, bytecode-compiled.
+A minimal programming language, designed as an interactive environment for my [os/64](https://bitbucket.org/qx89l4/os64). Inspired by, but not compatible with, Forth.  Easily portable to different platforms.  Main characteristics: imperative, stack-based, interpreted, compiled to bytecode.
 
 ### Installation ###
 
