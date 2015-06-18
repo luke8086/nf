@@ -109,21 +109,21 @@ ok
 >>>
 ```
 
-**Words and variables**
+**Variables and subroutines**
 ```
->>> :
-...   2 *
-... ; "double" def
->>> 5 double . cr
-10
->>>
-
 >>> 123 "x" var
 >>> x "x = %d\n" printf
 x = 123
 >>> 321 "x" assign
 >>> x "x = %d\n" printf
 x = 321
+>>>
+
+>>> :
+...   2 *
+... ; "double" def
+>>> 5 double . cr
+10
 >>>
 ```
 
