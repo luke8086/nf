@@ -185,6 +185,20 @@ nf_sys_free(struct nf_machine *m)
     return 0;
 }
 
+/* change desktop background ( path -- ) */
+static int
+nf_sys_set_bg(struct nf_machine *m)
+{
+    char *path;
+
+    if (nf_data_check(m, 1, 0))
+        return -1;
+
+    path = (char *)nf_data_pop(m);
+    gui_set_bg(path);
+
+    return 0;
+}
 
 /* define os64 system words */
 void
@@ -202,6 +216,7 @@ nf_define_os64_words(struct nf_machine *m)
         { .name = "sys-exit",     .data = (void*)nf_sys_exit },
         { .name = "sys-malloc",   .data = (void*)nf_sys_malloc },
         { .name = "sys-free",     .data = (void*)nf_sys_free },
+        { .name = "sys-set-bg",   .data = (void*)nf_sys_set_bg },
     };
     count = sizeof(words) / sizeof(words[0]);
     for (i = 0; i < count; ++i) {
