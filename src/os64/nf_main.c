@@ -253,6 +253,8 @@ nf_run(int argc, char **argv)
     extern void nf_define_os64_words(struct nf_machine *m);
     nf_define_os64_words(m);
 
+    (void)nf_interpret(m, "/data/init.nf");
+
     // if no filename is given, run in interactive mode
     char *path = argc ? argv[0] : 0;
 
