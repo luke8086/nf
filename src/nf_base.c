@@ -213,7 +213,7 @@ nf_base_var(struct nf_machine *m)
     return 0;
 }
 
-/* 'assign' ( n s -- ) */
+/* ':=' ( n s -- ) */
 static int
 nf_base_assign(struct nf_machine *m)
 {
@@ -370,7 +370,7 @@ nf_define_base_words(struct nf_machine *m)
         { .name = "exec",   .data = (void*)nf_base_exec },
         { .name = "def",    .data = (void*)nf_base_def },
         { .name = "var",    .data = (void*)nf_base_var },
-        { .name = "assign", .data = (void*)nf_base_assign },
+        { .name = ":=",     .data = (void*)nf_base_assign },
 
         { .name = "argc",   .data = (void*)nf_base_argc },
         { .name = "argv",   .data = (void*)nf_base_argv },
