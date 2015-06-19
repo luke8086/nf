@@ -114,7 +114,7 @@ ok
 >>> 123 "x" var
 >>> x "x = %d\n" printf
 x = 123
->>> 321 "x" assign
+>>> 321 "x" :=
 >>> x "x = %d\n" printf
 x = 321
 >>>
