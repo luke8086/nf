@@ -161,23 +161,23 @@ then
 
 \ allocate buffer
 
-size sys-malloc "buf" assign
+size sys-malloc "buf" :=
 buf 0 == if -1 cat-exit then
 
 \ open input file
 
-1 argv sys-open "fd_in" assign
+1 argv sys-open "fd_in" :=
 fd_in 0 < if -1 cat-exit then
 
 \ open virtual terminal device
 
-path_out sys-open "fd_out" assign
+path_out sys-open "fd_out" :=
 fd_out 0 < if -1 cat-exit then
 
 \ copy from input file to terminal until end of file
 
 do
-        size buf fd_in sys-read "count" assign
+        size buf fd_in sys-read "count" :=
         count 0 < if -1 cat-exit then
         count 0 == if 0 cat-exit then
         count buf fd_out sys-write drop
