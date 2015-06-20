@@ -8,6 +8,7 @@
  */
 
 #include <kernel/kernel.h>
+#include <gui/gui.h>
 
 #include "../nf_common.h"
 
