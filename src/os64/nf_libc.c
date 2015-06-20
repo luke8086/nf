@@ -4,7 +4,7 @@
  */
 
 /*
- * nf_os64_libc.c - os64 libc interface
+ * os64/nf_libc.c - os64 libc interface
  */
 
 #include <kernel/kernel.h>
