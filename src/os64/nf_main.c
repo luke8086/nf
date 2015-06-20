@@ -4,7 +4,7 @@
  */
 
 /*
- * nf_os64_main.c - os64 main routine
+ * os64/nf_main.c - os64 main routine
  */
 
 #include <kernel/kernel.h>

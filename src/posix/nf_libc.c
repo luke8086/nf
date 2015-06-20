@@ -4,7 +4,7 @@
  */
 
 /*
- * nf_posix_libc.c - posix libc interface
+ * posix/nf_libc.c - posix libc interface
  */
 
 #define _POSIX_C_SOURCE 200809L

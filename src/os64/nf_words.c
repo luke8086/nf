@@ -4,7 +4,7 @@
  */
 
 /*
- * nf_os64wd.c - os64 platform specific words
+ * os64/nf_words.c - os64 platform specific words
  */
 
 #include <kernel/kernel.h>

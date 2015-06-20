@@ -4,7 +4,7 @@
  */
 
 /*
- * nf_posix_main.c - posix main routine
+ * posix/nf_main.c - posix main routine
  */
 
 #define _POSIX_C_SOURCE 200809L
