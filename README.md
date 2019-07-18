@@ -5,14 +5,13 @@ A minimal programming language, designed as an interactive environment for my [o
 ### Installation ###
 
 ```
-#!bash
 $ make
 $ make test
 $ ./build/nf
 >>> "Hello World!!!\n" printf
 Hello World!!!
 >>> <Ctrl+D>
-$ 
+$
 ```
 
 ### Usage ###
@@ -58,7 +57,7 @@ Hello world!!!
 **Operators**
 ```
 >>> 4 2 >= . cr
-1 
+1
 >>> 4 2 < . cr
 0
 >>> 1 0 && . cr
