@@ -305,7 +305,7 @@ nf_base_cr(struct nf_machine *m)
 }
 
 /* arg-provider for asnprintf */
-static unsigned long long
+static uintmax_t
 nf_printf_arg_fn(void *payload)
 {
     struct nf_machine *m = (struct nf_machine *)payload;
