@@ -31,7 +31,7 @@ enum {
     PF_FLAGS,
     PF_WIDTH,
     PF_LENGTH,
-    PF_CONV,
+    PF_CONV
 };
 
 /* length specifiers */
@@ -49,7 +49,7 @@ enum {
     PF_d,
     PF_u,
     PF_x,
-    PF_X,
+    PF_X
 };
 
 /* char-emitter and arg-provider function typedefs */
