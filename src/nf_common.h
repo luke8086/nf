@@ -22,7 +22,12 @@ enum {
     NF_LINE_BUF_SIZE   = 1024,
 };
 
+#ifdef __SIZE_TYPE__
+typedef __SIZE_TYPE__ size_t;
+#else
 typedef uint64_t size_t;
+#endif
+
 typedef int64_t nf_cell_t;
 
 /* interpreter tokens */
