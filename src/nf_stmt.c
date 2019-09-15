@@ -57,19 +57,19 @@ nf_stmt_if(struct nf_machine *m)
 {
     struct nf_instr *i;
 
-    // if interpreting, compile until 'then' and automatically exec
+    /* if interpreting, compile until 'then' and automatically exec */
     if (m->state != NF_STATE_COMPILE) {
         nf_comp_start(m);
     }
 
-    // insert a blank branch-unless
+    /* insert a blank branch-unless */
     i = nf_comp_instr(m, NF_OPCODE_BRANCH_UNLESS, 0);
     if (!i) {
         nf_error("compilation buffer overflow");
         return -1;
     }
 
-    // and push it to be updated by 'else' or 'then'
+    /* and push it to be updated by 'else' or 'then' */
     if (nf_stmt_push(m, NF_STMT_IF, i)) {
         nf_error("statement stack overflow");
         return -1;
@@ -90,7 +90,7 @@ nf_stmt_else(struct nf_machine *m)
         return -1;
     }
 
-    // update offset in the branch-if of 'if'. add 1 to skip 'else'
+    /* update offset in the branch-if of 'if'. add 1 to skip 'else' */
     s_if = nf_stmt_pop(m);
     if (!s_if || s_if->type != NF_STMT_IF) {
         nf_error("syntax error");
@@ -98,14 +98,14 @@ nf_stmt_else(struct nf_machine *m)
     }
     s_if->ip->value = (m->comp_ip - s_if->ip + 1);
 
-    // insert a blank branch instruction
+    /* insert a blank branch instruction */
     i_else = nf_comp_instr(m, NF_OPCODE_BRANCH, 0);
     if (!i_else) {
         nf_error("compilation buffer overflow");
         return -1;
     }
 
-    // and push to cs to be updated by 'then'
+    /* and push to cs to be updated by 'then' */
     if (nf_stmt_push(m, NF_STMT_ELSE, i_else)) {
         nf_error("statement stack overflow");
         return -1;
@@ -125,7 +125,7 @@ nf_stmt_then(struct nf_machine *m)
         return -1;
     }
 
-    // update offset of the last 'if' or 'else'
+    /* update offset of the last 'if' or 'else' */
     s = nf_stmt_pop(m);
     if (!s || (s->type != NF_STMT_IF && s->type != NF_STMT_ELSE)) {
         nf_error("syntax error");
@@ -133,12 +133,12 @@ nf_stmt_then(struct nf_machine *m)
     }
     s->ip->value = m->comp_ip - s->ip;
 
-    // if the statement stack is not empty, continue compilation
+    /* if the statement stack is not empty, continue compilation */
     if (nf_stmt_count(m)) {
         return 0;
     }
 
-    // finish compilation and exec the bytecode
+    /* finish compilation and exec the bytecode */
     nf_comp_finish(m);
     if (nf_exec(m, m->comp_buf)) {
         return -1;
@@ -151,12 +151,12 @@ nf_stmt_then(struct nf_machine *m)
 static int
 nf_stmt_do(struct nf_machine *m)
 {
-    // if interpreting, compile up to 'until' or 'repeat' and exec
+    /* if interpreting, compile up to 'until' or 'repeat' and exec */
     if (m->state != NF_STATE_COMPILE) {
         nf_comp_start(m);
     }
 
-    // push a 'do' statement pointing to the next instruction
+    /* push a 'do' statement pointing to the next instruction */
     if (nf_stmt_push(m, NF_STMT_DO, m->comp_ip)) {
         nf_error("statement stack overflow");
         return -1;
@@ -177,21 +177,21 @@ nf_stmt_while(struct nf_machine *m)
         return -1;
     }
 
-    // make sure the last statement was 'do'
+    /* make sure the last statement was 'do' */
     s = nf_stmt_get(m, 0);
     if (!s || s->type != NF_STMT_DO) {
         nf_error("syntax error");
         return -1;
     }
 
-    // insert a blank branch-unless instruction
+    /* insert a blank branch-unless instruction */
     i = nf_comp_instr(m, NF_OPCODE_BRANCH_UNLESS, 0);
     if (!i) {
         nf_error("compilation buffer overflow");
         return -1;
     }
 
-    // push a 'while' statement to be updated by 'repeat'
+    /* push a 'while' statement to be updated by 'repeat' */
     if (nf_stmt_push(m, NF_STMT_WHILE, i)) {
         nf_error("statement stack overflow");
     };
@@ -210,7 +210,7 @@ nf_stmt_repeat(struct nf_machine *m)
         return -1;
     }
 
-    // update offset in 'while', add 1 to skip the next instruction
+    /* update offset in 'while', add 1 to skip the next instruction */
     s = nf_stmt_pop(m);
     if (!s || s->type != NF_STMT_WHILE) {
         nf_error("syntax error");
@@ -218,26 +218,26 @@ nf_stmt_repeat(struct nf_machine *m)
     }
     s->ip->value =  m->comp_ip - s->ip + 1;
 
-    // fetch the last 'do' statement
+    /* fetch the last 'do' statement */
     s = nf_stmt_pop(m);
     if (!s || s->type != NF_STMT_DO) {
         nf_error("syntax error");
         return -1;
     }
 
-    // insert unconditional branch instruction
-    // pointing to the address stored in 'do'
+    /* insert unconditional branch instruction */
+    /* pointing to the address stored in 'do' */
     if (!nf_comp_instr(m, NF_OPCODE_BRANCH, s->ip - m->comp_ip)) {
         nf_error("compilation buffer overflow");
         return -1;
     };
 
-    // if the statement stack is not empty, continue compilation
+    /* if the statement stack is not empty, continue compilation */
     if (nf_stmt_count(m)) {
         return 0;
     }
 
-    // finish compilation and exec the bytecode
+    /* finish compilation and exec the bytecode */
     nf_comp_finish(m);
     if (nf_exec(m, m->comp_buf)) {
         return -1;
@@ -257,26 +257,26 @@ nf_stmt_until(struct nf_machine *m)
         return -1;
     }
 
-    // fetch the last 'do' statement
+    /* fetch the last 'do' statement */
     s = nf_stmt_pop(m);
     if (!s || s->type != NF_STMT_DO) {
         nf_error("syntax error");
         return -1;
     }
 
-    // insert unconditional branch instruction
-    // pointing to the address stored by 'do'
+    /* insert unconditional branch instruction */
+    /* pointing to the address stored by 'do' */
     if (!nf_comp_instr(m, NF_OPCODE_BRANCH_UNLESS, s->ip - m->comp_ip)) {
         nf_error("compilation buffer overflow");
         return -1;
     };
 
-    // if the statement stack is not empty, continue compilation
+    /* if the statement stack is not empty, continue compilation */
     if (nf_stmt_count(m)) {
         return 0;
     }
 
-    // finish compilation and exec the bytecode
+    /* finish compilation and exec the bytecode */
     nf_comp_finish(m);
     if (nf_exec(m, m->comp_buf)) {
         return -1;

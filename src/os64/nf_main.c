@@ -39,7 +39,7 @@ nf_display_prompt(struct nf_machine *m)
     int attr_hint = 0x0d;
     int attr_stack = 0x0e;
 
-    // tiny prompt for compilation mode
+    /* tiny prompt for compilation mode */
     if (m->state == NF_STATE_COMPILE) {
         nf_chattr(0x0a);
         nf_printf("    ... ");
@@ -47,7 +47,7 @@ nf_display_prompt(struct nf_machine *m)
         return;
     }
 
-    // print the top row
+    /* print the top row */
     nf_chattr(attr_border);
     nf_printf("\xda");
     memset(buf, 0xc4, 79);
@@ -55,28 +55,28 @@ nf_display_prompt(struct nf_machine *m)
     nf_printf(buf);
     nf_printf("\xb3 ");
 
-    // handle empty stack
+    /* handle empty stack */
     if (m->data_sp == m->data_stack) {
 
         nf_chattr(attr_hint);
         nf_printf("(empty)");
 
-    // display stack contents
+    /* display stack contents */
     } else {
 
-        // select at no more than n top items
+        /* select at no more than n top items */
         c = m->data_sp - n;
         if (c < m->data_stack) {
             c = m->data_stack;
         }
 
-        // print ellipsis if there are more elements than displayed
+        /* print ellipsis if there are more elements than displayed */
         if (c > m->data_stack) {
             nf_chattr(attr_hint);
             nf_printf("(...) ");
         }
 
-        // print stack elements
+        /* print stack elements */
         nf_chattr(attr_stack);
         while (c < m->data_sp) {
             nf_printf("%ld ", *c++);
@@ -84,7 +84,7 @@ nf_display_prompt(struct nf_machine *m)
 
     }
 
-    // print the bottom row
+    /* print the bottom row */
     nf_printf("\n");
     nf_chattr(attr_border);
     nf_printf("\xc0\xc4\xc4 >>> ");
@@ -99,11 +99,11 @@ nf_get_char(char *ch, int fd)
 
     *ch = 0;
 
-    // read from file
+    /* read from file */
     if (fd >= 0) {
         return file_read(fd, ch, 1) == 1 ? 0 : -1;
 
-    // read from keyboard
+    /* read from keyboard */
     } else {
 
         while (kbd_read(&key))
@@ -130,36 +130,36 @@ nf_get_line(char *buf, size_t size, int *eof, int fd)
     if (!size)
         return -1;
 
-    // fill buffer with 0 and leave space for at least one terminator
+    /* fill buffer with 0 and leave space for at least one terminator */
     memset(buf, 0, size--);
 
     while (1) {
         ret = nf_get_char(&ch, fd);
 
-        // end of file
+        /* end of file */
         if (ret != 0) {
             *eof = 1;
             return n;
         }
 
-        // backspace in interactive mode with no previous characters
+        /* backspace in interactive mode with no previous characters */
         else if (intv && ch == '\b' && n == 0) {
             continue;
         }
     
-        // backspace in interactive mode with previous characters present
+        /* backspace in interactive mode with previous characters present */
         else if (intv && ch == '\b' && n > 0) {
             --n;
             nf_printf("\b");
             continue;
         }
 
-        // regular character with overflow
+        /* regular character with overflow */
         else if (n == size && ch != '\n') {
             continue;
         }
 
-        // regular character with no overflow
+        /* regular character with no overflow */
         else if (n < size && ch != '\n') {
             buf[n++] = ch;
             if (intv)
@@ -167,7 +167,7 @@ nf_get_line(char *buf, size_t size, int *eof, int fd)
             continue;
         }
 
-        // return key
+        /* return key */
         else if (ch == '\n') {
             if (intv)
                 nf_printf("\n");
@@ -175,7 +175,7 @@ nf_get_line(char *buf, size_t size, int *eof, int fd)
         }
     }
 
-    // NOTREACHED
+    /* NOTREACHED */
     return -1;
 }
 
@@ -193,44 +193,44 @@ nf_interpret(struct nf_machine *m, char *path)
     ret = 0;
     eof = 0;
 
-    // open source file in file mode
+    /* open source file in file mode */
     if (path) {
         fd = vfs_open(path);
     }
 
-    // error when opening file
+    /* error when opening file */
     if (path && fd < 0) {
         nf_error("cannot open file: %s", path);
         return -1;
     }
 
-    // interpret lines until end of file
+    /* interpret lines until end of file */
     while (!eof) {
 
-        // show prompt and get line
+        /* show prompt and get line */
         if (intv)
             nf_display_prompt(m);
         size = nf_get_line(line, sizeof(line), &eof, fd);
 
-        // error in file mode
+        /* error in file mode */
         if (size < 0 && !intv) {
             ret = -1;
             break;
         }
 
-        // error in interactive mode or empty line
+        /* error in interactive mode or empty line */
         if (size <= 0) {
             continue;
         }
         
-        // interpret line. in file mode, break on error
+        /* interpret line. in file mode, break on error */
         if (nf_intp_line(m, line) && !intv) {
             ret = -1;
             break;
         }
     }
 
-    // cleanup
+    /* cleanup */
     if (fd >= 0)
         file_close(fd);
 
@@ -243,19 +243,19 @@ nf_run(int argc, char **argv)
 {
     struct nf_machine *m;
 
-    // initialize virtual machine
+    /* initialize virtual machine */
     if (!(m = nf_init_machine(argc, argv))) {
         nf_error("out of memory");
         return -1;
     };
 
-    // setup os64-specific words
+    /* setup os64-specific words */
     extern void nf_define_os64_words(struct nf_machine *m);
     nf_define_os64_words(m);
 
     (void)nf_interpret(m, "/data/init.nf");
 
-    // if no filename is given, run in interactive mode
+    /* if no filename is given, run in interactive mode */
     char *path = argc ? argv[0] : 0;
 
     return nf_interpret(m, path);
@@ -270,5 +270,5 @@ nf_main(int argc, char **argv)
     ret = nf_run(argc, argv);
     nf_exit(ret);
 
-    // NOTREACHED
+    /* NOTREACHED */
 }

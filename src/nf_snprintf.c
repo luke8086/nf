@@ -186,16 +186,16 @@ pf_emit_char(struct pf_config *c, char ch)
 {
     int pad;
 
-    // emit left padding
+    /* emit left padding */
     for (pad = c->width - 1; !c->rpad && pad > 0; --pad) {
         pf_emit(c, ' ');
     }
 
-    // emit character
+    /* emit character */
     pf_emit(c, ch);
 
 
-    // emit right padding
+    /* emit right padding */
     for (pad = c->width - 1; c->rpad && pad > 0; --pad) {
         pf_emit(c, ' ');
     }
@@ -209,17 +209,17 @@ pf_emit_str(struct pf_config *c, char *s)
 
     len = pf_strlen(s);
 
-    // emit left padding
+    /* emit left padding */
     for (pad = c->width - len; !c->rpad && pad > 0; --pad) {
         pf_emit(c, ' ');
     }
 
-    // emit string
+    /* emit string */
     while (*s) {
         pf_emit(c, *s++);
     }
 
-    // emit right padding
+    /* emit right padding */
     for (pad = c->width - len; c->rpad && pad > 0; --pad) {
         pf_emit(c, ' ');
     }
@@ -242,7 +242,7 @@ pf_emit_uint(struct pf_config *c, unsigned long long n, int neg)
 
     sign_width = !!neg;
 
-    // "crop" the value to the requested size
+    /* "crop" the value to the requested size */
     switch (c->length) {
     case PF_h:      n = (unsigned short)n;      break;
     case PF_NONE:   n = (unsigned)n;            break;
@@ -250,7 +250,7 @@ pf_emit_uint(struct pf_config *c, unsigned long long n, int neg)
     case PF_ll:     n = (unsigned long long)n;  break;
     };
 
-    // select uppercase or lowercase character set
+    /* select uppercase or lowercase character set */
     switch (c->conv) {
     case PF_d: base = 10; digits = l_hex_digits; break;
     case PF_u: base = 10; digits = l_hex_digits; break;
@@ -259,7 +259,7 @@ pf_emit_uint(struct pf_config *c, unsigned long long n, int neg)
     default: c->error = 1; return;
     }
 
-    // save digits to the temporary buffer in a reverse order
+    /* save digits to the temporary buffer in a reverse order */
     i = 0;
     do {
         d = n % base;
@@ -267,30 +267,30 @@ pf_emit_uint(struct pf_config *c, unsigned long long n, int neg)
         buf[i++] = digits[d];
     } while (n != 0 && (size_t)i < sizeof(buf));
 
-    // save the amount of digits
+    /* save the amount of digits */
     num_width = i;
 
-    // in case of zero padding of a negative number, emit '-' before padding
+    /* in case of zero padding of a negative number, emit '-' before padding */
     if (neg && c->zpad) {
         pf_emit(c, '-');
     }
 
-    // emit left padding (spaces or zeros)
+    /* emit left padding (spaces or zeros) */
     for (pad = c->width - num_width - sign_width; !c->rpad && pad > 0; --pad) {
         pf_emit(c, c->zpad ? '0' : ' ');
     }
 
-    // in case of space padding of a negative number, emit '-' after padding
+    /* in case of space padding of a negative number, emit '-' after padding */
     if (neg && !c->zpad) {
         pf_emit(c, '-');
     }
 
-    // emit digits in the correct order
+    /* emit digits in the correct order */
     for (i = num_width - 1; i >= 0; --i) {
         pf_emit(c, buf[i]);
     }
 
-    // emit right padding (only spaces)
+    /* emit right padding (only spaces) */
     for (pad = c->width - num_width - sign_width; c->rpad && pad > 0; --pad) {
         pf_emit(c, ' ');
     }
@@ -323,17 +323,17 @@ pf_cprintf(const char *fmt, struct pf_config *c)
 
     while ((ch = *fmt++)) {
 
-        //
-        // PF_DEFAULT
-        //
+        /*
+         * PF_DEFAULT
+         */
 
-        // regular character
+        /* regular character */
         if (c->state == PF_DEFAULT && ch != '%') {
             pf_emit(c, ch);
             continue;
         }
 
-        // beginning of format specifier
+        /* beginning of format specifier */
         if (c->state == PF_DEFAULT && ch == '%') {
             c->state = PF_FLAGS;
             c->length = PF_NONE;
@@ -344,77 +344,77 @@ pf_cprintf(const char *fmt, struct pf_config *c)
             continue;
         }
 
-        //
-        // PF_FLAGS
-        //
+        /*
+         * PF_FLAGS
+        `*/
 
-        // handle flag '0'
+        /* handle flag '0' */
         if (c->state == PF_FLAGS && ch == '0') {
             c->zpad = 1;
             continue;
         }
 
-        // handle flag '-'
+        /* handle flag '-' */
         if (c->state == PF_FLAGS && ch == '-') {
             c->rpad = 1;
             continue;
         }
 
-        // handle character other than a flag
+        /* handle character other than a flag */
         if (c->state == PF_FLAGS) {
             c->state = PF_WIDTH;
-            // FALLTHROUGH
+            /* FALLTHROUGH */
         }
 
-        //
-        // PF_WIDTH
-        //
+        /*
+         * PF_WIDTH
+         */
 
-        // handle a single digit of the width
+        /* handle a single digit of the width */
         if (c->state == PF_WIDTH && ch >= '0' && ch <= '9') {
             c->width = c->width * 10 + (ch - '0');
             continue;
         }
 
-        // handle character other than a digit
+        /* handle character other than a digit */
         if (c->state == PF_WIDTH) {
             c->state = PF_LENGTH;
-            // FALLTHROUGH
+            /* FALLTHROUGH */
         }
 
-        //
-        // PF_LENGTH
-        //
+        /*
+         * PF_LENGTH
+         */
 
-        // handle %h
+        /* handle %h */
         if (c->state == PF_LENGTH && c->length == PF_NONE && ch == 'h') {
             c->length = PF_h;
             continue;
         }
 
-        // handle %l
+        /* handle %l */
         if (c->state == PF_LENGTH && c->length == PF_NONE && ch == 'l') {
             c->length = PF_l;
             continue;
         }
 
-        // handle %ll
+        /* handle %ll */
         if (c->state == PF_LENGTH && c->length == PF_l && ch == 'l') {
             c->length = PF_ll;
             continue;
         }
 
-        // handle character other than a length specifier
+        /* handle character other than a length specifier */
         if (c->state == PF_LENGTH) {
             c->state = PF_CONV;
-            // FALLTHROUGH
+            /* FALLTHROUGH */
         }
 
-        //
-        // PF_CONV
-        //
+        /*
+         * PF_CONV
+         */
 
-        // handle %d
+        /* handle %d */
         if (c->state == PF_CONV && ch == 'd') {
             c->conv = PF_d;
             arg = pf_get_arg(c);
@@ -423,7 +423,7 @@ pf_cprintf(const char *fmt, struct pf_config *c)
             continue;
         }
 
-        // handle %u
+        /* handle %u */
         if (c->state == PF_CONV && ch == 'u') {
             c->conv = PF_u;
             arg = pf_get_arg(c);
@@ -432,7 +432,7 @@ pf_cprintf(const char *fmt, struct pf_config *c)
             continue;
         }
 
-        // handle %x
+        /* handle %x */
         if (c->state == PF_CONV && ch == 'x') {
             c->conv = PF_x;
             arg = pf_get_arg(c);
@@ -441,7 +441,7 @@ pf_cprintf(const char *fmt, struct pf_config *c)
             continue;
         }
 
-        // handle %X
+        /* handle %X */
         if (c->state == PF_CONV && ch == 'X') {
             c->conv = PF_X;
             arg = pf_get_arg(c);
@@ -450,7 +450,7 @@ pf_cprintf(const char *fmt, struct pf_config *c)
             continue;
         }
 
-        // handle %c
+        /* handle %c */
         if (c->state == PF_CONV && c->length == PF_NONE && ch == 'c') {
             c->conv = PF_c;
             arg = pf_get_arg(c);
@@ -459,7 +459,7 @@ pf_cprintf(const char *fmt, struct pf_config *c)
             continue;
         }
 
-        // handle %s
+        /* handle %s */
         if (c->state == PF_CONV && c->length == PF_NONE && ch == 's') {
             c->conv = PF_s;
             arg = pf_get_arg(c);
@@ -468,7 +468,7 @@ pf_cprintf(const char *fmt, struct pf_config *c)
             continue;
         }
 
-        // invalid format
+        /* invalid format */
         c->error = 1;
     }
     
@@ -497,28 +497,28 @@ pf_vasnprintf(char *buf, size_t nbyte, const char *fmt,
     struct pf_vasnprintf_payload payload, *p = &payload;
     struct pf_config config, *c = &config;
 
-    // setup payload
+    /* setup payload */
     p->buf = buf;
     p->nbyte = nbyte;
     p->i = 0;
 
-    // setup pf_config
+    /* setup pf_config */
     c->emit_fn = pf_vasnprintf_emit;
     c->emit_payload = p;
     c->arg_list = arg_list;
     c->arg_fn = arg_fn;
     c->arg_payload = arg_payload;
 
-    // process
+    /* process */
     pf_cprintf(fmt, c);
 
-    // in case of overflow, ensure that buffer is null-terminated
+    /* in case of overflow, ensure that buffer is null-terminated */
     if (p->i > p->nbyte) {
         p->buf[p->nbyte - 1] = 0;
     }
 
-    // the return value is the amount of characters which would
-    // be emitted, given enough space, or -1 on error
+    /* the return value is the amount of characters which would */
+    /* be emitted, given enough space, or -1 on error */
     return c->error ? -1 : (p->i - 1);
 }
 

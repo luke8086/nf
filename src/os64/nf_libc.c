@@ -58,7 +58,7 @@ void
 nf_exit(int code)
 {
     task_exit(code);
-    // NOTREACHED
+    /* NOTREACHED */
 }
 
 /* write a string to the terminal */

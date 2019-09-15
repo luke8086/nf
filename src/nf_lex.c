@@ -98,19 +98,19 @@ nf_parse_escape_seq(char *src, char *dst)
     char ch;
     int n;
 
-    // \xnn - hexadecimal number, 3 characters
+    /* \xnn - hexadecimal number, 3 characters */
     if (s0 == 'x' && nf_is_hex(s1) && nf_is_hex(s2)) {
         ch = nf_hex_to_int(s1) * 16 + nf_hex_to_int(s2);
         n = 3;
     }
 
-    // \nnn - octal number, 3 characters 
+    /* \nnn - octal number, 3 characters  */
     else if (nf_is_oct(s0) && nf_is_oct(s1) && nf_is_oct(s2)) {
         ch = nf_oct_to_int(s0) * 64 + nf_oct_to_int(s1) * 8 + nf_oct_to_int(s2);
         n = 3;
     }
 
-    // \s - single character
+    /* \s - single character */
     else switch (s0) {
     case 'a':  ch = '\a'; n = 1; break;
     case 'b':  ch = '\b'; n = 1; break;
@@ -126,13 +126,13 @@ nf_parse_escape_seq(char *src, char *dst)
     default:   ch = 0;    n = 0; break;
     }
 
-    // success
+    /* success */
     if (n) {
         *dst = ch;
         return src + n;
     } 
 
-    // error
+    /* error */
     return 0;
 }
 
@@ -153,17 +153,17 @@ nf_parse_string(char *src, struct nf_token *tok)
     char s0, s1;
     int n;
 
-    // make sure src matches a string
+    /* make sure src matches a string */
     if (!nf_match_string(src)) {
         tok->type = NF_TOKEN_INVALID;
         return 0;
     }
 
-    // initialize token
+    /* initialize token */
     tok->type = NF_TOKEN_STRING;
     n = 0;
 
-    // skip initial quote
+    /* skip initial quote */
     src++;
 
     while (1) {
@@ -171,20 +171,20 @@ nf_parse_string(char *src, struct nf_token *tok)
         s0 = src[0];
         s1 = s0 ? src[1] : 0;
 
-        // the only valid termination of string: " followed by 0 or delimiter
+        /* the only valid termination of string: " followed by 0 or delimiter */
         if (s0 == '"' && (!s1 || nf_is_delim(s1))) {
             src += 1;
             tok->str[n] = 0;
             return src;
         }
 
-        // premature null terminator, " terminator or buffer overflow
+        /* premature null terminator, " terminator or buffer overflow */
         else if (!s0 || s0 == '\"' || n >= NF_TOKEN_MAX_WIDTH) {
             tok->type = NF_TOKEN_INVALID;
             return 0;
         }
 
-        // escape sequence
+        /* escape sequence */
         else if (s0 == '\\') {
             src = nf_parse_escape_seq(src + 1, &tok->str[n++]);
             if (!src) {
@@ -193,7 +193,7 @@ nf_parse_string(char *src, struct nf_token *tok)
             }
         }
 
-        // regular character
+        /* regular character */
         else {
             tok->str[n++] = s0;
             src += 1;
@@ -202,29 +202,29 @@ nf_parse_string(char *src, struct nf_token *tok)
 
     }
 
-    // NOTREACHED
+    /* NOTREACHED */
 }
 
 /* check if src matches a number */
 static int
 nf_match_number(char *src)
 {
-    // null pointer
+    /* null pointer */
     if (!src) {
         return 0;
     }
 
-    // starts with decimal digit
+    /* starts with decimal digit */
     else if (nf_is_dec(src[0])) {
         return 1;
     }
 
-    // starts with +/- and decimal digit
+    /* starts with +/- and decimal digit */
     else if ((src[0] == '-' || src[0] == '+') && nf_is_dec(src[1])) {
         return 1;
     }
 
-    // not a number
+    /* not a number */
     else {
         return 0;
     }
@@ -244,71 +244,71 @@ nf_parse_number(char *src, struct nf_token *tok)
     tok->type = NF_TOKEN_NUMBER;
     tok->num = 0;
 
-    // - sign
+    /* - sign */
     if (s[0] == '-') {
         mul = -1;
         s += 1;
     }
-    // + sign
+    /* + sign */
     else if (s[0] == '+') {
         mul = 1;
         s += 1;
     }
-    // no explicit sign
+    /* no explicit sign */
     else {
         mul = 1;
     }
 
-    // hexadecimal prefix
+    /* hexadecimal prefix */
     if (s[0] == '0' && s[1] == 'x' && nf_is_hex(s[2])) {
         base = 16;
         s += 2;
     }
-    // octal prefix with octal character
+    /* octal prefix with octal character */
     else if (s[0] == '0' && nf_is_oct(s[1])) {
         base = 8;
         s += 1;
     }
-    // octal prefix with non octal character
+    /* octal prefix with non octal character */
     else if (s[0] == '0' && s[1] && !nf_is_delim(s[1])) {
         tok->type = NF_TOKEN_INVALID;
         return 0;
     }
-    // no prefix
+    /* no prefix */
     else {
         base = 10;
     }
 
     while (1) {
 
-        // null-terminator or delimiter
+        /* null-terminator or delimiter */
         if (s[0] == 0 || nf_is_delim(s[0])) {
             tok->num *= mul;
             return s;
         }
 
-        // base 10 and dec digit
+        /* base 10 and dec digit */
         else if (base == 10 && nf_is_dec(s[0])) {
             tok->num = tok->num * base + nf_dec_to_int(s[0]);
             s += 1;
             continue;
         }
 
-        // base 8 and oct digit
+        /* base 8 and oct digit */
         else if (base == 8 && nf_is_oct(s[0])) {
             tok->num = tok->num * base + nf_oct_to_int(s[0]);
             s += 1;
             continue;
         }
 
-        // base 16 and hex digit
+        /* base 16 and hex digit */
         else if (base == 16 && nf_is_hex(s[0])) {
             tok->num = tok->num * base + nf_hex_to_int(s[0]);
             s += 1;
             continue;
         }
 
-        // invalid character
+        /* invalid character */
         else {
             tok->type = NF_TOKEN_INVALID;
             return 0;
@@ -316,7 +316,7 @@ nf_parse_number(char *src, struct nf_token *tok)
 
     }
 
-    // NOTREACHED
+    /* NOTREACHED */
 }
 
 /*
@@ -329,7 +329,7 @@ nf_parse_word(char *src, struct nf_token *tok)
     int n;
     char s0;
 
-    // assume first character is already valid
+    /* assume first character is already valid */
     tok->type = NF_TOKEN_WORD;
     n = 0;
 
@@ -337,19 +337,19 @@ nf_parse_word(char *src, struct nf_token *tok)
 
         s0 = src[0];
 
-        // null terminator or delimiter
+        /* null terminator or delimiter */
         if (!s0 || nf_is_delim(s0)) {
             tok->str[n] = 0;
             return src;
         }
 
-        // buffer overflow
+        /* buffer overflow */
         else if (n >= NF_TOKEN_MAX_WIDTH) {
             tok->type = NF_TOKEN_INVALID;
             return 0;
         }
 
-        // regular character
+        /* regular character */
         else {
             tok->str[n++] = s0;
             src += 1;
@@ -357,7 +357,7 @@ nf_parse_word(char *src, struct nf_token *tok)
 
     }
 
-    // NOTREACHED
+    /* NOTREACHED */
 }
 
 /* check if src matches a comment */
@@ -376,7 +376,7 @@ nf_skip_delim(char *src)
 {
     char s0;
 
-    // handle null pointer
+    /* handle null pointer */
     if (!src) {
         return 0;
     }
@@ -385,25 +385,25 @@ nf_skip_delim(char *src)
 
         s0 = src[0];
 
-        // end of string
+        /* end of string */
         if (!s0) {
             return 0;
         }
 
-        // delimiter
+        /* delimiter */
         else if (nf_is_delim(s0)) {
             src++;
             continue;
         }
         
-        // regular character
+        /* regular character */
         else {
             return src;
         }
 
     }
 
-    // NOTREACHED
+    /* NOTREACHED */
 }
 
 /*
@@ -413,32 +413,32 @@ nf_skip_delim(char *src)
 char *
 nf_parse_token(char *src, struct nf_token *tok)
 {
-    // skip initial delimiters
+    /* skip initial delimiters */
     if (!(src = nf_skip_delim(src))) {
         tok->type = NF_TOKEN_EMPTY;
         return 0;
     }
 
-    // handle line comment
+    /* handle line comment */
     if (nf_match_comment(src)) {
         tok->type = NF_TOKEN_EMPTY;
         return 0;
     }
 
-    // parse string
+    /* parse string */
     if (nf_match_string(src)) {
         return nf_parse_string(src, tok);
     }
 
-    // parse number
+    /* parse number */
     if (nf_match_number(src)) {
         return nf_parse_number(src, tok);
     }
 
-    // parse word
+    /* parse word */
     else {
         return nf_parse_word(src, tok);
     }
 
-    // NOTREACHED
+    /* NOTREACHED */
 }
