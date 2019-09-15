@@ -16,19 +16,20 @@ OBJS = \
 	$(OBJDIR)/nf_base.o \
 	$(OBJDIR)/nf_word.o \
 	$(OBJDIR)/nf_prtf.o \
+	$(OBJDIR)/nf_str.o \
 	$(OBJDIR)/posix/nf_main.o \
 	$(OBJDIR)/posix/nf_libc.o \
 
 NF = $(OBJDIR)/nf
-	
+
 all: $(NF)
-	
+
 $(OBJDIR)/posix/%.o: $(SRCDIR)/posix/%.c $(INCLUDES)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c $(INCLUDES)
 	$(CC) $(CFLAGS) -c $< -o $@
-	
+
 $(NF): $(OBJS)
 	$(CC) $(LDFLAGS) $(OBJS) -o $(NF)
 

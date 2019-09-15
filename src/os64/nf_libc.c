@@ -25,34 +25,6 @@ nf_free(void *ptr)
     kheap_free(ptr);
 }
 
-/* copy memory area */
-void *
-nf_memcpy(void *dest, const void *src, size_t n)
-{
-    return memcpy(dest, src, n);
-}
-
-/* calculate the length of a string */
-size_t
-nf_strlen(const char *s1)
-{
-    return strlen(s1);
-}
-
-/* compare two strings */
-int
-nf_strcmp(const char *s1, const char *s2)
-{
-    return strcmp(s1, s2);
-}
-
-/* copy a string */
-char *
-nf_strncpy(char *dest, const char *src, size_t n)
-{
-    return strncpy(dest, src, n);
-}
-
 /* exit interpreter with given status code */
 void
 nf_exit(int code)
