@@ -19,13 +19,10 @@ typedef unsigned long long size_t;
 #define PF_ASNPRINTF nf_asnprintf
 #define PF_VSNPRINTF nf_vsnprintf
 #define PF_SNPRINTF  nf_snprintf
-extern size_t nf_strlen(const char *s);
-#define strlen nf_strlen
 #else
 #define PF_ASNPRINTF pf_asnprintf
 #define PF_VSNPRINTF pf_vsnprintf
 #define PF_SNPRINTF  pf_snprintf
-extern size_t strlen(const char *s);
 #endif
 
 /* consecutive input states */
@@ -87,6 +84,8 @@ struct pf_vasnprintf_payload {
 };
 
 /* local functions */
+static size_t pf_strlen(const char *s);
+
 static unsigned long long pf_get_arg_va(va_list *va, int len, int conv);
 static unsigned long long pf_get_arg(struct pf_config *c);
 
@@ -99,6 +98,19 @@ static void pf_cprintf(const char *fmt, struct pf_config *c);
 static int pf_vasnprintf_emit(void *payload, char ch);
 static int pf_vasnprintf(char *buf, size_t nbyte, const char *fmt,
            va_list *arg_list, pf_arg_fn *arg_fn, void *arg_payload);
+
+/* calculate the length of a string */
+static size_t
+pf_strlen(const char *s)
+{
+    size_t ret = 0;
+
+    while (*s++) {
+        ++ret;
+    }
+
+    return ret;
+}
 
 /* get an argument with given len and conv from a va_list */
 static unsigned long long
@@ -195,7 +207,7 @@ pf_emit_str(struct pf_config *c, char *s)
 {
     int pad, len;
 
-    len = strlen(s);
+    len = pf_strlen(s);
 
     // emit left padding
     for (pad = c->width - len; !c->rpad && pad > 0; --pad) {
