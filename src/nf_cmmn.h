@@ -154,10 +154,10 @@ struct nf_machine {
 
 /* macros */
 
-#define nf_error(args) {    \
-    nf_printf("error: ");   \
-    nf_printf args;         \
-    nf_printf("\n");        \
+#define nf_error(args) {                           \
+    nf_printf("error: ");                          \
+    nf_printf args;                                \
+    nf_printf(" (%s:%d)\n", __FILE__, __LINE__);   \
 }
 
 /* global functions */
