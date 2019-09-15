@@ -14,7 +14,7 @@
 
 #include <readline/readline.h>
 
-#include "../nf_common.h"
+#include "../nf_cmmn.h"
 
 /* local functions */
 static int nf_interpret_int(struct nf_machine *m);

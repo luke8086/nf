@@ -4,11 +4,11 @@
  */
 
 /*
- * nf_common.h - type definitions and declarations of global functions
+ * nf_cmmn.h - type definitions and declarations of global functions
  */
 
-#ifndef _NF_COMMON_H_
-#define _NF_COMMON_H_
+#ifndef _NF_CMMN_H_
+#define _NF_CMMN_H_
 
 #include <stdint.h>
 #include <stdarg.h>
@@ -192,5 +192,5 @@ void nf_define_word(struct nf_machine *m, struct nf_word *w);
 struct nf_word *nf_lookup_word(struct nf_machine *m, char *name);
 int nf_call_word(struct nf_machine *m, struct nf_word *w);
 
-#endif // _NF_COMMON_H_
+#endif // _NF_CMMN_H_
 

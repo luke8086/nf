@@ -6,7 +6,7 @@ SRCDIR = ./src
 OBJDIR = ./build
 TESTDIR = ./tests
 
-INCLUDES = $(SRCDIR)/nf_common.h
+INCLUDES = $(SRCDIR)/nf_cmmn.h
 
 OBJS = \
 	$(OBJDIR)/nf_stmt.o \

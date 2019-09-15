@@ -7,7 +7,7 @@
  * nf_intp.c - interpreter
  */
 
-#include "nf_common.h"
+#include "nf_cmmn.h"
 
 /* local functions */
 static int nf_intp_string(struct nf_machine *m, struct nf_token *t);

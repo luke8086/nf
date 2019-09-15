@@ -7,7 +7,7 @@
  * nf_base.c - base words
  */
 
-#include "nf_common.h"
+#include "nf_cmmn.h"
 
 #define NF_OPERATOR_BINARY(name, expr)      \
     static int                              \

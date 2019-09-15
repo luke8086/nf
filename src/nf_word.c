@@ -7,7 +7,7 @@
  * nf_word.c - word initialization, lookup and execution
  */
 
-#include "nf_common.h"
+#include "nf_cmmn.h"
 
 /* initialize a new word on the heap */
 struct nf_word *
