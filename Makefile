@@ -15,7 +15,7 @@ OBJS = \
 	$(OBJDIR)/nf_mach.o \
 	$(OBJDIR)/nf_base.o \
 	$(OBJDIR)/nf_word.o \
-	$(OBJDIR)/nf_snprintf.o \
+	$(OBJDIR)/nf_prtf.o \
 	$(OBJDIR)/posix/nf_main.o \
 	$(OBJDIR)/posix/nf_libc.o \
 

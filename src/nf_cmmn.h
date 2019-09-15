@@ -203,7 +203,7 @@ struct nf_instr *nf_comp_instr(struct nf_machine *m, nf_cell_t opcode,
 
 struct nf_machine *nf_init_machine(int argc, char **argv);
 
-/* nf_snprintf.c */
+/* nf_prtf.c */
 int nf_asnprintf(char *buf, size_t nbyte, const char *fmt,
                  uintmax_t (arg_fn)(void *), void *payload);
 int nf_vsnprintf(char *buf, size_t nbyte, const char *fmt,
