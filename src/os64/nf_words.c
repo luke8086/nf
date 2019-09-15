@@ -150,7 +150,7 @@ nf_sys_exit(struct nf_machine *m)
     code = (int)nf_data_pop(m);
     task_exit(code);
 
-    // NOTREACHED
+    /* NOTREACHED */
     return 0;
 }
 

@@ -22,7 +22,7 @@ nf_intp_string(struct nf_machine *m, struct nf_token *t)
     size_t len;
     char *p;
 
-    // duplicate string on the heap
+    /* duplicate string on the heap */
     len = nf_strlen(t->str) + 1;
     p = nf_malloc(len);
     if (!p) {
@@ -31,14 +31,14 @@ nf_intp_string(struct nf_machine *m, struct nf_token *t)
     }
     nf_memcpy(p, t->str, len);
 
-    // in interpret mode, push address to the stack
+    /* in interpret mode, push address to the stack */
     if (m->state == NF_STATE_INTERPRET) {
 
         if (nf_data_check(m, 0, 1))
             return -1;
         nf_data_push(m, (nf_cell_t)p);
 
-    // in compilation mode, compile heap address as a literal
+    /* in compilation mode, compile heap address as a literal */
     } else {
 
         if (!nf_comp_instr(m, NF_OPCODE_LITERAL, (nf_cell_t)p)) {
@@ -55,14 +55,14 @@ nf_intp_string(struct nf_machine *m, struct nf_token *t)
 static int
 nf_intp_number(struct nf_machine *m, struct nf_token *t)
 {
-    // in interpretation mode, push to the stack
+    /* in interpretation mode, push to the stack */
     if (m->state == NF_STATE_INTERPRET) {
 
         if (nf_data_check(m, 0, 1))
             return -1;
         nf_data_push(m, t->num);
 
-    // in compilation mode mode, compile as a literal
+    /* in compilation mode mode, compile as a literal */
     } else {
 
         if (!nf_comp_instr(m, NF_OPCODE_LITERAL, t->num)) {
@@ -85,14 +85,14 @@ nf_intp_word(struct nf_machine *m, struct nf_token *t)
         return -1;
     }
 
-    // in interpretation mode or if word is a statement, execute it
+    /* in interpretation mode or if word is a statement, execute it */
     if (m->state == NF_STATE_INTERPRET || p->type == NF_WORD_STMT) {
 
         if (nf_call_word(m, p)) {
             return -1;
         }
 
-    // in compilation mode, compile CALL instruction
+    /* in compilation mode, compile CALL instruction */
     } else {
 
         if (!nf_comp_instr(m, NF_OPCODE_CALL, (nf_cell_t)p)) {

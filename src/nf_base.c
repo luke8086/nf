@@ -169,7 +169,7 @@ nf_base_def(struct nf_machine *m)
 
     name = (char *)nf_data_pop(m);
 
-    // copy instructions to a new buffer
+    /* copy instructions to a new buffer */
     i_count = m->comp_ip - m->comp_buf;
     i = nf_malloc(i_count * sizeof(struct nf_instr));
     if (!i) {
@@ -178,7 +178,7 @@ nf_base_def(struct nf_machine *m)
     }
     nf_memcpy(i, m->comp_buf, i_count * sizeof(struct nf_instr));
 
-    // initialize a word and add to the dictionary
+    /* initialize a word and add to the dictionary */
     w = nf_init_word(m, name, NF_WORD_COMP, i);
     if (!w) {
         nf_error("out of memory");

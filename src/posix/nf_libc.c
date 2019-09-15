@@ -78,5 +78,5 @@ void
 nf_exit(int code)
 {
     exit(code);
-    // NOTREACHED
+    /* NOTREACHED */
 }

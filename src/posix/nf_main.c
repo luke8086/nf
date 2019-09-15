@@ -39,7 +39,7 @@ nf_interpret_int(struct nf_machine *m)
         (void)nf_intp_line(m, line);
     }
 
-    // NOTREACHED
+    /* NOTREACHED */
     return -1;
 }
 
@@ -61,7 +61,7 @@ nf_interpret_file(struct nf_machine *m)
             return -1;
     }
 
-    // NOTREACHED
+    /* NOTREACHED */
     return -1;
 }
 

@@ -138,16 +138,16 @@ struct nf_machine {
 
 /* global functions */
 
-// nf_base.c
+/* nf_base.c */
 void nf_define_base_words(struct nf_machine *m);
 
-// nf_intp.c
+/* nf_intp.c */
 int nf_intp_line(struct nf_machine *m, char *line);
 
-// nf_lex.c
+/* nf_lex.c */
 char *nf_parse_token(char *src, struct nf_token *tok);
 
-// nf_libc.c
+/* nf_libc.c */
 void *nf_malloc(size_t size);
 void nf_free(void *ptr);
 void *nf_memcpy(void *dest, const void *src, size_t n);
@@ -157,10 +157,10 @@ char *nf_strncpy(char *dest, const char *src, size_t n);
 void nf_exit(int code);
 int nf_printf(const char *format, ...);
 
-// nf_stmt.c
+/* nf_stmt.c */
 void nf_define_stmt_words(struct nf_machine *m);
 
-// nf_mach.c
+/* nf_mach.c */
 int nf_data_check(struct nf_machine *m, size_t count_in, size_t count_out);
 nf_cell_t nf_data_pop(struct nf_machine *m);
 void nf_data_push(struct nf_machine *m, nf_cell_t v);
@@ -179,18 +179,18 @@ struct nf_instr *nf_comp_instr(struct nf_machine *m, nf_cell_t opcode,
 
 struct nf_machine *nf_init_machine(int argc, char **argv);
 
-// nf_snprintf.c
+/* nf_snprintf.c */
 int nf_asnprintf(char *buf, size_t nbyte, const char *fmt,
                  unsigned long long (arg_fn)(void *), void *payload);
 int nf_vsnprintf(char *buf, size_t nbyte, const char *fmt,
                  va_list va);
 
-// nf_word.c
+/* nf_word.c */
 struct nf_word *nf_init_word(struct nf_machine *m, char *name,
                              enum nf_word_type type, void *data);
 void nf_define_word(struct nf_machine *m, struct nf_word *w);
 struct nf_word *nf_lookup_word(struct nf_machine *m, char *name);
 int nf_call_word(struct nf_machine *m, struct nf_word *w);
 
-#endif // _NF_CMMN_H_
+#endif /* _NF_CMMN_H_ */
 
