@@ -173,7 +173,7 @@ nf_base_def(struct nf_machine *m)
     i_count = m->comp_ip - m->comp_buf;
     i = nf_malloc(i_count * sizeof(struct nf_instr));
     if (!i) {
-        nf_error("out of memory");
+        nf_error(("out of memory"));
         return -1;
     }
     nf_memcpy(i, m->comp_buf, i_count * sizeof(struct nf_instr));
@@ -181,7 +181,7 @@ nf_base_def(struct nf_machine *m)
     /* initialize a word and add to the dictionary */
     w = nf_init_word(m, name, NF_WORD_COMP, i);
     if (!w) {
-        nf_error("out of memory");
+        nf_error(("out of memory"));
         return -1;
     }
     nf_define_word(m, w);
@@ -205,7 +205,7 @@ nf_base_var(struct nf_machine *m)
 
     w = nf_init_word(m, name, NF_WORD_VAR, val);
     if (!w) {
-        nf_error("out of memory");
+        nf_error(("out of memory"));
         return -1;
     }
     nf_define_word(m, w);
@@ -229,7 +229,7 @@ nf_base_assign(struct nf_machine *m)
 
     w = nf_lookup_word(m, name);
     if (!w || w->type != NF_WORD_VAR) {
-        nf_error("unknown variable");
+        nf_error(("unknown variable"));
         return -1;
     }
     w->data = val;

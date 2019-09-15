@@ -74,7 +74,7 @@ main(int argc, char **argv)
 
     m = nf_init_machine(argc, argv);
     if (!m) {
-        nf_error("error: out of memory\n");
+        nf_error(("error: out of memory\n"));
         nf_exit(1);
     }
 

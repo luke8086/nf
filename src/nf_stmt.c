@@ -14,14 +14,14 @@ static int
 nf_stmt_colon(struct nf_machine *m)
 {
     if (m->state != NF_STATE_INTERPRET) {
-        nf_error("syntax error");
+        nf_error(("syntax error"));
         return -1;
     }
 
     nf_comp_start(m);
 
     if (nf_stmt_push(m, NF_STMT_COLON, m->comp_ip)) {
-        nf_error("statement stack overflow");
+        nf_error(("statement stack overflow"));
         return -1;
     };
 
@@ -35,14 +35,14 @@ nf_stmt_semicolon(struct nf_machine *m)
     struct nf_stmt *s;
 
     if (m->state != NF_STATE_COMPILE) {
-        nf_error("syntax error");
+        nf_error(("syntax error"));
         return -1;
     }
 
     s = nf_stmt_pop(m);
 
     if (!s || s->type != NF_STMT_COLON) {
-        nf_error("syntax error");
+        nf_error(("syntax error"));
         return -1;
     }
 
@@ -65,13 +65,13 @@ nf_stmt_if(struct nf_machine *m)
     /* insert a blank branch-unless */
     i = nf_comp_instr(m, NF_OPCODE_BRANCH_UNLESS, 0);
     if (!i) {
-        nf_error("compilation buffer overflow");
+        nf_error(("compilation buffer overflow"));
         return -1;
     }
 
     /* and push it to be updated by 'else' or 'then' */
     if (nf_stmt_push(m, NF_STMT_IF, i)) {
-        nf_error("statement stack overflow");
+        nf_error(("statement stack overflow"));
         return -1;
     };
 
@@ -86,14 +86,14 @@ nf_stmt_else(struct nf_machine *m)
     struct nf_stmt *s_if;
 
     if (m->state != NF_STATE_COMPILE) {
-        nf_error("syntax error");
+        nf_error(("syntax error"));
         return -1;
     }
 
     /* update offset in the branch-if of 'if'. add 1 to skip 'else' */
     s_if = nf_stmt_pop(m);
     if (!s_if || s_if->type != NF_STMT_IF) {
-        nf_error("syntax error");
+        nf_error(("syntax error"));
         return -1;
     }
     s_if->ip->value = (m->comp_ip - s_if->ip + 1);
@@ -101,13 +101,13 @@ nf_stmt_else(struct nf_machine *m)
     /* insert a blank branch instruction */
     i_else = nf_comp_instr(m, NF_OPCODE_BRANCH, 0);
     if (!i_else) {
-        nf_error("compilation buffer overflow");
+        nf_error(("compilation buffer overflow"));
         return -1;
     }
 
     /* and push to cs to be updated by 'then' */
     if (nf_stmt_push(m, NF_STMT_ELSE, i_else)) {
-        nf_error("statement stack overflow");
+        nf_error(("statement stack overflow"));
         return -1;
     };
 
@@ -121,14 +121,14 @@ nf_stmt_then(struct nf_machine *m)
     struct nf_stmt *s;
 
     if (m->state != NF_STATE_COMPILE) {
-        nf_error("syntax error");
+        nf_error(("syntax error"));
         return -1;
     }
 
     /* update offset of the last 'if' or 'else' */
     s = nf_stmt_pop(m);
     if (!s || (s->type != NF_STMT_IF && s->type != NF_STMT_ELSE)) {
-        nf_error("syntax error");
+        nf_error(("syntax error"));
         return -1;
     }
     s->ip->value = m->comp_ip - s->ip;
@@ -158,7 +158,7 @@ nf_stmt_do(struct nf_machine *m)
 
     /* push a 'do' statement pointing to the next instruction */
     if (nf_stmt_push(m, NF_STMT_DO, m->comp_ip)) {
-        nf_error("statement stack overflow");
+        nf_error(("statement stack overflow"));
         return -1;
     };
 
@@ -173,27 +173,27 @@ nf_stmt_while(struct nf_machine *m)
     struct nf_stmt *s;
 
     if (m->state != NF_STATE_COMPILE) {
-        nf_error("syntax error");
+        nf_error(("syntax error"));
         return -1;
     }
 
     /* make sure the last statement was 'do' */
     s = nf_stmt_get(m, 0);
     if (!s || s->type != NF_STMT_DO) {
-        nf_error("syntax error");
+        nf_error(("syntax error"));
         return -1;
     }
 
     /* insert a blank branch-unless instruction */
     i = nf_comp_instr(m, NF_OPCODE_BRANCH_UNLESS, 0);
     if (!i) {
-        nf_error("compilation buffer overflow");
+        nf_error(("compilation buffer overflow"));
         return -1;
     }
 
     /* push a 'while' statement to be updated by 'repeat' */
     if (nf_stmt_push(m, NF_STMT_WHILE, i)) {
-        nf_error("statement stack overflow");
+        nf_error(("statement stack overflow"));
     };
 
     return 0;
@@ -206,14 +206,14 @@ nf_stmt_repeat(struct nf_machine *m)
     struct nf_stmt *s;
 
     if (m->state != NF_STATE_COMPILE) {
-        nf_error("syntax error");
+        nf_error(("syntax error"));
         return -1;
     }
 
     /* update offset in 'while', add 1 to skip the next instruction */
     s = nf_stmt_pop(m);
     if (!s || s->type != NF_STMT_WHILE) {
-        nf_error("syntax error");
+        nf_error(("syntax error"));
         return -1;
     }
     s->ip->value =  m->comp_ip - s->ip + 1;
@@ -221,14 +221,14 @@ nf_stmt_repeat(struct nf_machine *m)
     /* fetch the last 'do' statement */
     s = nf_stmt_pop(m);
     if (!s || s->type != NF_STMT_DO) {
-        nf_error("syntax error");
+        nf_error(("syntax error"));
         return -1;
     }
 
     /* insert unconditional branch instruction */
     /* pointing to the address stored in 'do' */
     if (!nf_comp_instr(m, NF_OPCODE_BRANCH, s->ip - m->comp_ip)) {
-        nf_error("compilation buffer overflow");
+        nf_error(("compilation buffer overflow"));
         return -1;
     };
 
@@ -253,21 +253,21 @@ nf_stmt_until(struct nf_machine *m)
     struct nf_stmt *s;
 
     if (m->state != NF_STATE_COMPILE) {
-        nf_error("syntax error");
+        nf_error(("syntax error"));
         return -1;
     }
 
     /* fetch the last 'do' statement */
     s = nf_stmt_pop(m);
     if (!s || s->type != NF_STMT_DO) {
-        nf_error("syntax error");
+        nf_error(("syntax error"));
         return -1;
     }
 
     /* insert unconditional branch instruction */
     /* pointing to the address stored by 'do' */
     if (!nf_comp_instr(m, NF_OPCODE_BRANCH_UNLESS, s->ip - m->comp_ip)) {
-        nf_error("compilation buffer overflow");
+        nf_error(("compilation buffer overflow"));
         return -1;
     };
 
