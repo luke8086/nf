@@ -26,7 +26,7 @@ nf_intp_string(struct nf_machine *m, struct nf_token *t)
     len = nf_strlen(t->str) + 1;
     p = nf_malloc(len);
     if (!p) {
-        nf_error("out of memory");
+        nf_error(("out of memory"));
         return -1;
     }
     nf_memcpy(p, t->str, len);
@@ -42,7 +42,7 @@ nf_intp_string(struct nf_machine *m, struct nf_token *t)
     } else {
 
         if (!nf_comp_instr(m, NF_OPCODE_LITERAL, (nf_cell_t)p)) {
-            nf_error("compilation buffer overflow");
+            nf_error(("compilation buffer overflow"));
             return -1;
         }
 
@@ -66,7 +66,7 @@ nf_intp_number(struct nf_machine *m, struct nf_token *t)
     } else {
 
         if (!nf_comp_instr(m, NF_OPCODE_LITERAL, t->num)) {
-            nf_error("compilation buffer overflow");
+            nf_error(("compilation buffer overflow"));
             return -1;
         }
 
@@ -81,7 +81,7 @@ nf_intp_word(struct nf_machine *m, struct nf_token *t)
     struct nf_word *p = nf_lookup_word(m, t->str);
 
     if (!p) {
-        nf_error("unknown word");
+        nf_error(("unknown word"));
         return -1;
     }
 
@@ -96,7 +96,7 @@ nf_intp_word(struct nf_machine *m, struct nf_token *t)
     } else {
 
         if (!nf_comp_instr(m, NF_OPCODE_CALL, (nf_cell_t)p)) {
-            nf_error("compilation buffer overflow");
+            nf_error(("compilation buffer overflow"));
             return -1;
         }
 
@@ -115,7 +115,7 @@ nf_intp_token(struct nf_machine *m, struct nf_token *t)
         return 0;
 
     case NF_TOKEN_INVALID:
-        nf_error("invalid token\n");
+        nf_error(("invalid token\n"));
         return -1;
 
     case NF_TOKEN_STRING:

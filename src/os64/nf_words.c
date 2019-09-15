@@ -28,7 +28,7 @@ nf_sys_spawn(struct nf_machine *m)
     argv = nf_malloc(argc * sizeof(char*));
 
     if (!argv) {
-        nf_error("out of memory");
+        nf_error(("out of memory"));
         return -1;
     }
 

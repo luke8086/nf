@@ -21,12 +21,12 @@ nf_data_check(struct nf_machine *m, size_t count_in, size_t count_out)
     size_t free = NF_DATA_STACK_SIZE - used;
 
     if (used < count_in) {
-        nf_error("data stack underflow");
+        nf_error(("data stack underflow"));
         return -1;
     }
 
     if (free + count_in < count_out) {
-        nf_error("data stack overflow");
+        nf_error(("data stack overflow"));
         return -1;
     }
 
@@ -184,7 +184,7 @@ nf_exec(struct nf_machine *m, struct nf_instr *i)
         }
 
         else {
-            nf_error("invalid opcode: %d/%ld", i->opcode, i->value);
+            nf_error(("invalid opcode: %d/%ld", i->opcode, i->value));
             ret = -1;
             break;
         }

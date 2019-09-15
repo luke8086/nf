@@ -130,10 +130,10 @@ struct nf_machine {
 
 /* macros */
 
-#define nf_error(...) {         \
-    nf_printf("error: ");       \
-    nf_printf(__VA_ARGS__);     \
-    nf_printf("\n");            \
+#define nf_error(args) {    \
+    nf_printf("error: ");   \
+    nf_printf args;         \
+    nf_printf("\n");        \
 }
 
 /* global functions */

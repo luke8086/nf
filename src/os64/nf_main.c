@@ -200,7 +200,7 @@ nf_interpret(struct nf_machine *m, char *path)
 
     /* error when opening file */
     if (path && fd < 0) {
-        nf_error("cannot open file: %s", path);
+        nf_error(("cannot open file: %s", path));
         return -1;
     }
 
@@ -245,7 +245,7 @@ nf_run(int argc, char **argv)
 
     /* initialize virtual machine */
     if (!(m = nf_init_machine(argc, argv))) {
-        nf_error("out of memory");
+        nf_error(("out of memory"));
         return -1;
     };
 
