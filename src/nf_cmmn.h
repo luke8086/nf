@@ -19,7 +19,7 @@ enum {
     NF_DATA_STACK_SIZE = 4096,
     NF_STMT_STACK_SIZE = 16,
     NF_COMP_BUF_SIZE   = 2048,
-    NF_LINE_BUF_SIZE   = 1024,
+    NF_LINE_BUF_SIZE   = 1024
 };
 
 #ifdef __SIZE_TYPE__
@@ -37,7 +37,7 @@ enum nf_token_type {
     NF_TOKEN_WORD = 1,
     NF_TOKEN_NUMBER = 2,
     NF_TOKEN_STRING = 3,
-    NF_TOKEN_INVALID = 4,
+    NF_TOKEN_INVALID = 4
 };
 
 struct nf_token {
@@ -54,7 +54,7 @@ enum nf_opcode {
     NF_OPCODE_LITERAL,
     NF_OPCODE_BRANCH,
     NF_OPCODE_BRANCH_IF,
-    NF_OPCODE_BRANCH_UNLESS,
+    NF_OPCODE_BRANCH_UNLESS
 };
 
 struct nf_instr {
@@ -90,7 +90,7 @@ enum nf_word_type {
     NF_WORD_PRIM,
     NF_WORD_COMP,
     NF_WORD_STMT,
-    NF_WORD_VAR,
+    NF_WORD_VAR
 };
 
 struct nf_word {
@@ -105,7 +105,7 @@ struct nf_word {
 enum nf_machine_state {
     NF_STATE_INTERPRET,
     NF_STATE_COMPILE,
-    NF_STATE_EXECUTE,
+    NF_STATE_EXECUTE
 };
 
 struct nf_machine {
