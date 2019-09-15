@@ -47,7 +47,7 @@ int nf_printf(const char *format, ...)
 
 /* exit interpreter with given status code */
 void
-nf_exit(int code)
+nf_exit(char code)
 {
     exit(code);
     /* NOTREACHED */

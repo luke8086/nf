@@ -300,7 +300,10 @@ nf_base_dot(struct nf_machine *m)
 static int
 nf_base_cr(struct nf_machine *m)
 {
+    (void)m; /* silence compiler warning*/
+
     nf_printf("\n");
+
     return 0;
 }
 

@@ -361,7 +361,7 @@ pf_cprintf(const char *fmt, struct pf_config *c)
     c->error = 0;
     c->emitted = 0;
 
-    while ((ch = *fmt++)) {
+    for (ch = *(fmt++); ch != 0; ch = *(fmt++)) {
 
         /*
          * PF_DEFAULT

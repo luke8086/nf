@@ -414,7 +414,8 @@ char *
 nf_parse_token(char *src, struct nf_token *tok)
 {
     /* skip initial delimiters */
-    if (!(src = nf_skip_delim(src))) {
+    src = nf_skip_delim(src);
+    if (!src) {
         tok->type = NF_TOKEN_EMPTY;
         return 0;
     }
