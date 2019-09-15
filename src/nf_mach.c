@@ -7,7 +7,7 @@
  * nf_mach.c - nf virtual machine functions
  */
 
-#include "nf_common.h"
+#include "nf_cmmn.h"
 
 /*
  * ensure the stack contains enough elements and enough space to support

@@ -12,7 +12,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../nf_common.h"
+#include "../nf_cmmn.h"
 
 /* allocate chunk of memory on the heap */
 void *

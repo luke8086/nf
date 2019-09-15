@@ -10,7 +10,7 @@
 #include <kernel/kernel.h>
 #include <gui/gui.h>
 
-#include "../nf_common.h"
+#include "../nf_cmmn.h"
 
 /* spawn a new nf process ( ... argc name -- pid ) */
 static int

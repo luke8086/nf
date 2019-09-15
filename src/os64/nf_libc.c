@@ -9,7 +9,7 @@
 
 #include <kernel/kernel.h>
 
-#include "../nf_common.h"
+#include "../nf_cmmn.h"
 
 /* allocate a chunk of memory */
 void *

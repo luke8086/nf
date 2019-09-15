@@ -7,7 +7,7 @@
  * nf_stmt.c - statement handling words
  */
 
-#include "nf_common.h"
+#include "nf_cmmn.h"
 
 /* ':' ( -- ':' ) */
 static int

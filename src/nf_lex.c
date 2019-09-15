@@ -7,7 +7,7 @@
  * nf_lex.c - lexical parser
  */
  
-#include "nf_common.h"
+#include "nf_cmmn.h"
 
 /* local functions */
 static int nf_is_delim(int c);

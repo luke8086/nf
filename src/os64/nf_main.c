@@ -9,7 +9,7 @@
 
 #include <kernel/kernel.h>
 
-#include "../nf_common.h"
+#include "../nf_cmmn.h"
 
 /* local functions */
 static void nf_chattr(uint8_t attr);
