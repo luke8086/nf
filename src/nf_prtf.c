@@ -583,6 +583,10 @@ PF_ASNPRINTF(char *buf, size_t nbyte, const char *fmt,
 int
 PF_VSNPRINTF(char *buf, size_t nbyte, const char *fmt, va_list va)
 {
+#if __STDC_VERSION__ < 199901L
+    /* fallback for ANSI C, this works in Turbo C but not in modern compilers */
+    return pf_vasnprintf(buf, nbyte, fmt, &va, 0, 0);
+#else
     va_list va_copy;
     int ret;
 
@@ -591,6 +595,7 @@ PF_VSNPRINTF(char *buf, size_t nbyte, const char *fmt, va_list va)
     va_end(va_copy);
 
     return ret;
+#endif
 }
 
 /* snprintf interface accepting variable amount of arguments */
