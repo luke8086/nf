@@ -60,7 +60,7 @@ NF_OPERATOR_BINARY(ne, n1 != n2)
 NF_OPERATOR_BINARY(lt, n1 <  n2)
 NF_OPERATOR_BINARY(le, n1 <= n2)
 NF_OPERATOR_BINARY(gt, n1 >  n2)
-NF_OPERATOR_BINARY(ge, n1 >= n2) 
+NF_OPERATOR_BINARY(ge, n1 >= n2)
 
 
 /* 'dup' ( x -- x x ) */
@@ -199,7 +199,7 @@ nf_base_var(struct nf_machine *m)
 
     if (nf_data_check(m, 2, 0))
         return -1;
-    
+
     name = (char *)nf_data_pop(m);
     val = (void *)nf_data_pop(m);
 
@@ -223,7 +223,7 @@ nf_base_assign(struct nf_machine *m)
 
     if (nf_data_check(m, 2, 0))
         return -1;
-    
+
     name = (char *)nf_data_pop(m);
     val = (void *)nf_data_pop(m);
 

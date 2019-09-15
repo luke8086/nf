@@ -6,7 +6,7 @@
 /*
  * nf_lex.c - lexical parser
  */
- 
+
 #include "nf_cmmn.h"
 
 /* local functions */
@@ -130,7 +130,7 @@ nf_parse_escape_seq(char *src, char *dst)
     if (n) {
         *dst = ch;
         return src + n;
-    } 
+    }
 
     /* error */
     return 0;
@@ -395,7 +395,7 @@ nf_skip_delim(char *src)
             src++;
             continue;
         }
-        
+
         /* regular character */
         else {
             return src;
