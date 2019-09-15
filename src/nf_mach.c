@@ -132,6 +132,7 @@ nf_comp_instr(struct nf_machine *m, nf_cell_t opcode, nf_cell_t value)
 int
 nf_exec(struct nf_machine *m, struct nf_instr *i)
 {
+    nf_cell_t v;
     enum nf_machine_state state = m->state;
     int ret = 0;
 
@@ -165,7 +166,7 @@ nf_exec(struct nf_machine *m, struct nf_instr *i)
                 ret = -1;
                 break;
             }
-            nf_cell_t v = nf_data_pop(m);
+            v = nf_data_pop(m);
             i += (v ? i->value : 1);
         }
 
@@ -174,7 +175,7 @@ nf_exec(struct nf_machine *m, struct nf_instr *i)
                 ret = -1;
                 break;
             }
-            nf_cell_t v = nf_data_pop(m);
+            v = nf_data_pop(m);
             i += (!v ? i->value : 1);
         }
 
