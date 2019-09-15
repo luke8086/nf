@@ -14,13 +14,14 @@ struct nf_word *
 nf_init_word(struct nf_machine *m, char *name, enum nf_word_type type, void *data)
 {
     size_t namelen = nf_strlen(name);
+    struct nf_word *w;
 
     if (namelen > NF_WORD_MAX_WIDTH) {
         nf_printf("name too long\n");
         return 0;
     }
 
-    struct nf_word *w = nf_malloc(sizeof(struct nf_word));
+    w = nf_malloc(sizeof(struct nf_word));
 
     if (!w) {
         return 0;
