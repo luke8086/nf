@@ -1,8 +1,13 @@
 ### nf ###
 
-A minimal programming language, designed as an interactive environment for my [os/64](https://bitbucket.org/qx89l4/os64). Inspired by, but not compatible with, Forth.  Easily portable to different platforms.  Main characteristics: imperative, stack-based, interpreted, compiled to bytecode.
+A minimal programming language, originally designed as an interactive
+environment for my [os/64](https://github.com/luke8086/os64).
+Inspired by Forth, but not compatible.  Easily portable to different
+platforms, including DOS and bare-bones x86.
+Main characteristics: imperative, stack-based, interpreted,
+compiled to bytecode.
 
-### Installation ###
+### Building for Linux / MacOS / POSIX ###
 
 ```
 $ make
@@ -13,6 +18,31 @@ Hello World!!!
 >>> <Ctrl+D>
 $
 ```
+
+### Building for DOS / BIOS ###
+
+- Install DOSBox and QEMU
+- Install [Turbo C 2.01](https://edn.embarcadero.com/article/20841) to `C:\TC`
+- Install NASM to `C:\NASM`
+- Compile:
+    ```
+    Z:\>mount d ~/nf
+    Z:\>D:
+    D:\>MAKE -fMAKEFILE.DOS
+    D:\>BUILD\NF.COM
+    >>> exit
+    D:\>
+    ```
+
+- Create and test the bootable version in QEMU:
+    ```
+    $ make qemu
+    ```
+
+- Optionally, if you have a PC with support for booting from USB in BIOS mode, and an unused USB stick:
+    ```
+    $ dd if=build/nf_x86.img of=/dev/<usb-stick>
+    ```
 
 ### Usage ###
 

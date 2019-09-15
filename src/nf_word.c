@@ -16,6 +16,8 @@ nf_init_word(struct nf_machine *m, char *name, enum nf_word_type type, void *dat
     size_t namelen = nf_strlen(name);
     struct nf_word *w;
 
+    (void)m; /* silence compiler warning */
+
     if (namelen > NF_WORD_MAX_WIDTH) {
         nf_printf("name too long\n");
         return 0;

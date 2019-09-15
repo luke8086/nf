@@ -27,7 +27,7 @@ nf_free(void *ptr)
 
 /* exit interpreter with given status code */
 void
-nf_exit(int code)
+nf_exit(char code)
 {
     task_exit(code);
     /* NOTREACHED */

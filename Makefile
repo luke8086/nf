@@ -34,7 +34,13 @@ $(NF): $(OBJS)
 	$(CC) $(LDFLAGS) $(OBJS) -o $(NF)
 
 clean:
-	rm -f $(OBJDIR)/*.o $(OBJDIR)/posix/*.o
+	rm -f $(OBJDIR)/*.o $(OBJDIR)/posix/*.o $(OBJDIR)/*.img
 
 test: $(NF)
 	$(TESTDIR)/tests.py
+
+# Launch the x86 version in qemu, unrelated to all the code above
+qemu:
+	cat $(OBJDIR)/NF_BOOT.BIN $(OBJDIR)/NF.COM > $(OBJDIR)/nf_x86.img
+	qemu-system-i386 -drive format=raw,file=$(OBJDIR)/nf_x86.img
+
