@@ -285,20 +285,22 @@ nf_stmt_until(struct nf_machine *m)
     return 0;
 }
 
+#define NF_DECL_STMT(name, data) { name, NF_WORD_STMT, data, 0 }
+
 /* append statement words to the dictionary */
 void
 nf_define_stmt_words(struct nf_machine *m)
 {
     static struct nf_word words[] = {
-        { .name = ":", .data = (void*)nf_stmt_colon },
-        { .name = ";", .data = (void*)nf_stmt_semicolon },
-        { .name = "if", .data = (void*)nf_stmt_if },
-        { .name = "else", .data = (void*)nf_stmt_else },
-        { .name = "then", .data = (void*)nf_stmt_then },
-        { .name = "do", .data = (void*)nf_stmt_do },
-        { .name = "repeat", .data = (void*)nf_stmt_repeat },
-        { .name = "while", .data = (void*)nf_stmt_while },
-        { .name = "until", .data = (void*)nf_stmt_until },
+        NF_DECL_STMT(":", (void*)nf_stmt_colon),
+        NF_DECL_STMT(";", (void*)nf_stmt_semicolon),
+        NF_DECL_STMT("if", (void*)nf_stmt_if),
+        NF_DECL_STMT("else", (void*)nf_stmt_else),
+        NF_DECL_STMT("then", (void*)nf_stmt_then),
+        NF_DECL_STMT("do", (void*)nf_stmt_do),
+        NF_DECL_STMT("repeat", (void*)nf_stmt_repeat),
+        NF_DECL_STMT("while", (void*)nf_stmt_while),
+        NF_DECL_STMT("until", (void*)nf_stmt_until),
     };
 
     int i, count;
@@ -306,7 +308,6 @@ nf_define_stmt_words(struct nf_machine *m)
     count = sizeof(words) / sizeof(words[0]);
 
     for (i = 0; i < count; ++i) {
-        words[i].type = NF_WORD_STMT;
         nf_define_word(m, &words[i]);
     }
 }

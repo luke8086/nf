@@ -337,48 +337,50 @@ nf_base_printf(struct nf_machine *m)
     return 0;
 }
 
+#define NF_DECL_PRIM(name, data) { name, NF_WORD_PRIM, data, 0 }
+
 /* append base words to the dictionary */
 void
 nf_define_base_words(struct nf_machine *m)
 {
     static struct nf_word words[] = {
-        { .name = "dup",    .data = (void*)nf_base_dup },
-        { .name = "drop",   .data = (void*)nf_base_drop },
-        { .name = "swap",   .data = (void*)nf_base_swap },
-        { .name = "over",   .data = (void*)nf_base_over },
-        { .name = "rot",    .data = (void*)nf_base_rot },
+        NF_DECL_PRIM("dup",    (void*)nf_base_dup),
+        NF_DECL_PRIM("drop",   (void*)nf_base_drop),
+        NF_DECL_PRIM("swap",   (void*)nf_base_swap),
+        NF_DECL_PRIM("over",   (void*)nf_base_over),
+        NF_DECL_PRIM("rot",    (void*)nf_base_rot),
 
-        { .name = "+",      .data = (void*)nf_base_add },
-        { .name = "-",      .data = (void*)nf_base_sub },
-        { .name = "*",      .data = (void*)nf_base_mul },
-        { .name = "/",      .data = (void*)nf_base_div },
-        { .name = "%",      .data = (void*)nf_base_mod },
-        { .name = "&&",     .data = (void*)nf_base_bool_and },
-        { .name = "||",     .data = (void*)nf_base_bool_or },
-        { .name = "!",      .data = (void*)nf_base_bool_not },
-        { .name = "&",      .data = (void*)nf_base_bit_and },
-        { .name = "|",      .data = (void*)nf_base_bit_or },
-        { .name = "^",      .data = (void*)nf_base_bit_xor },
-        { .name = "~",      .data = (void*)nf_base_bit_not },
-        { .name = "==",     .data = (void*)nf_base_eq },
-        { .name = "!=",     .data = (void*)nf_base_ne },
-        { .name = "<",      .data = (void*)nf_base_lt },
-        { .name = ">",      .data = (void*)nf_base_gt },
-        { .name = "<=",     .data = (void*)nf_base_le },
-        { .name = ">=",     .data = (void*)nf_base_ge },
+        NF_DECL_PRIM("+",      (void*)nf_base_add),
+        NF_DECL_PRIM("-",      (void*)nf_base_sub),
+        NF_DECL_PRIM("*",      (void*)nf_base_mul),
+        NF_DECL_PRIM("/",      (void*)nf_base_div),
+        NF_DECL_PRIM("%",      (void*)nf_base_mod),
+        NF_DECL_PRIM("&&",     (void*)nf_base_bool_and),
+        NF_DECL_PRIM("||",     (void*)nf_base_bool_or),
+        NF_DECL_PRIM("!",      (void*)nf_base_bool_not),
+        NF_DECL_PRIM("&",      (void*)nf_base_bit_and),
+        NF_DECL_PRIM("|",      (void*)nf_base_bit_or),
+        NF_DECL_PRIM("^",      (void*)nf_base_bit_xor),
+        NF_DECL_PRIM("~",      (void*)nf_base_bit_not),
+        NF_DECL_PRIM("==",     (void*)nf_base_eq),
+        NF_DECL_PRIM("!=",     (void*)nf_base_ne),
+        NF_DECL_PRIM("<",      (void*)nf_base_lt),
+        NF_DECL_PRIM(">",      (void*)nf_base_gt),
+        NF_DECL_PRIM("<=",     (void*)nf_base_le),
+        NF_DECL_PRIM(">=",     (void*)nf_base_ge),
 
-        { .name = "exec",   .data = (void*)nf_base_exec },
-        { .name = "def",    .data = (void*)nf_base_def },
-        { .name = "var",    .data = (void*)nf_base_var },
-        { .name = ":=",     .data = (void*)nf_base_assign },
+        NF_DECL_PRIM("exec",   (void*)nf_base_exec),
+        NF_DECL_PRIM("def",    (void*)nf_base_def),
+        NF_DECL_PRIM("var",    (void*)nf_base_var),
+        NF_DECL_PRIM(":=",     (void*)nf_base_assign),
 
-        { .name = "argc",   .data = (void*)nf_base_argc },
-        { .name = "argv",   .data = (void*)nf_base_argv },
+        NF_DECL_PRIM("argc",   (void*)nf_base_argc),
+        NF_DECL_PRIM("argv",   (void*)nf_base_argv),
 
-        { .name = "printf", .data = (void*)nf_base_printf },
-        { .name = ".s",     .data = (void*)nf_base_dot_s },
-        { .name = ".",      .data = (void*)nf_base_dot },
-        { .name = "cr",     .data = (void*)nf_base_cr },
+        NF_DECL_PRIM("printf", (void*)nf_base_printf),
+        NF_DECL_PRIM(".s",     (void*)nf_base_dot_s),
+        NF_DECL_PRIM(".",      (void*)nf_base_dot),
+        NF_DECL_PRIM("cr",     (void*)nf_base_cr),
     };
 
     int i, count;
@@ -386,7 +388,6 @@ nf_define_base_words(struct nf_machine *m)
     count = sizeof(words) / sizeof(words[0]);
 
     for (i = 0; i < count; ++i) {
-        words[i].type = NF_WORD_PRIM;
         nf_define_word(m, &words[i]);
     }
 }
