@@ -9,21 +9,42 @@
 
 #include <stdarg.h>
 
-#ifdef __SIZE_TYPE__
+/* platform settings, to be adjusted for each environment */
+
+#if defined(__SIZE_TYPE__)
 typedef __SIZE_TYPE__ size_t;
-#else
+#elif defined(NF_SUPPORTS_LONG_LONG)
 typedef unsigned long long size_t;
+#elif defined(NF_SUPPORTS_LONG)
+typedef unsigned long size_t;
+#else
+typedef unsigned size_t;
 #endif
 
-#ifdef NF_PRINTF
+#if defined(__UINTMAX_TYPE__)
+typedef __UINTMAX_TYPE__ uintmax_t;
+#elif defined(NF_SUPPORTS_LONG_LONG)
+typedef unsigned long long uintmax_t;
+#elif defined(NF_SUPPORTS_LONG)
+typedef unsigned long uintmax_t;
+#else
+typedef unsigned uintmax_t;
+#endif
+
+
+#if defined(__INTMAX_TYPE__)
+typedef __INTMAX_TYPE__ intmax_t;
+#elif defined(NF_SUPPORTS_LONG_LONG)
+typedef long long intmax_t;
+#elif defined(NF_SUPPORTS_LONG)
+typedef long intmax_t;
+#else
+typedef int intmax_t;
+#endif
+
 #define PF_ASNPRINTF nf_asnprintf
 #define PF_VSNPRINTF nf_vsnprintf
 #define PF_SNPRINTF  nf_snprintf
-#else
-#define PF_ASNPRINTF pf_asnprintf
-#define PF_VSNPRINTF pf_vsnprintf
-#define PF_SNPRINTF  pf_snprintf
-#endif
 
 /* consecutive input states */
 enum {
@@ -37,9 +58,15 @@ enum {
 /* length specifiers */
 enum {
     PF_NONE,
-    PF_h,
-    PF_l,
-    PF_ll,
+    PF_h
+
+#if defined(NF_SUPPORTS_LONG_LONG) || defined(NF_SUPPORTS_LONG)
+    , PF_l
+#endif
+
+#if defined(NF_SUPPORTS_LONG_LONG)
+    , PF_ll
+#endif
 };
 
 /* conversion specifiers */
@@ -54,7 +81,7 @@ enum {
 
 /* char-emitter and arg-provider function typedefs */
 typedef int (pf_emit_fn)(void *payload, char c);
-typedef unsigned long long (pf_arg_fn)(void *payload);
+typedef uintmax_t (pf_arg_fn)(void *payload);
 
 /* configuration and state of a single printf command */
 struct pf_config {
@@ -86,13 +113,13 @@ struct pf_vasnprintf_payload {
 /* local functions */
 static size_t pf_strlen(const char *s);
 
-static unsigned long long pf_get_arg_va(va_list *va, int len, int conv);
-static unsigned long long pf_get_arg(struct pf_config *c);
+static uintmax_t pf_get_arg_va(va_list *va, int len, int conv);
+static uintmax_t pf_get_arg(struct pf_config *c);
 
 static void pf_emit_char(struct pf_config *c, char ch);
 static void pf_emit_str(struct pf_config *c, char *s);
-static void pf_emit_uint(struct pf_config *c, unsigned long long n, int neg);
-static void pf_emit_int(struct pf_config *c, long long n);
+static void pf_emit_uint(struct pf_config *c, uintmax_t n, int neg);
+static void pf_emit_int(struct pf_config *c, intmax_t n);
 
 static void pf_cprintf(const char *fmt, struct pf_config *c);
 static int pf_vasnprintf_emit(void *payload, char ch);
@@ -113,7 +140,7 @@ pf_strlen(const char *s)
 }
 
 /* get an argument with given len and conv from a va_list */
-static unsigned long long
+static uintmax_t
 pf_get_arg_va(va_list *va, int len, int conv)
 {
     if (conv == PF_x || conv == PF_X)
@@ -124,7 +151,7 @@ pf_get_arg_va(va_list *va, int len, int conv)
     }
 
     if (conv == PF_s && len == PF_NONE)
-        return (unsigned long long)va_arg(*va, char *);
+        return (uintmax_t)va_arg(*va, char *);
 
     if (conv == PF_d && len == PF_h)
         return va_arg(*va, int);
@@ -132,11 +159,15 @@ pf_get_arg_va(va_list *va, int len, int conv)
     if (conv == PF_d && len == PF_NONE)
         return va_arg(*va, int);
 
+#if defined(NF_SUPPORTS_LONG_LONG) || defined(NF_SUPPORTS_LONG)
     if (conv == PF_d && len == PF_l)
         return va_arg(*va, long);
+#endif
 
+#if defined(NF_SUPPORTS_LONG_LONG)
     if (conv == PF_d && len == PF_ll)
         return va_arg(*va, long long);
+#endif
 
     if (conv == PF_u && len == PF_h)
         return va_arg(*va, unsigned);
@@ -144,17 +175,21 @@ pf_get_arg_va(va_list *va, int len, int conv)
     if (conv == PF_u && len == PF_NONE)
         return va_arg(*va, unsigned);
 
+#if defined(NF_SUPPORTS_LONG_LONG) || defined(NF_SUPPORTS_LONG)
     if (conv == PF_u && len == PF_l)
         return va_arg(*va, unsigned long);
+#endif
 
+#if defined(NF_SUPPORTS_LONG_LONG)
     if (conv == PF_u && len == PF_ll)
         return va_arg(*va, unsigned long long);
+#endif
 
     return 0;
 }
 
 /* get a single argument */
-static unsigned long long
+static uintmax_t
 pf_get_arg(struct pf_config *c)
 {
     if (c->arg_list)
@@ -228,12 +263,11 @@ pf_emit_str(struct pf_config *c, char *s)
 
 /* emit an unsigned integer */
 static void
-pf_emit_uint(struct pf_config *c, unsigned long long n, int neg)
+pf_emit_uint(struct pf_config *c, uintmax_t n, int neg)
 {
     static const char *l_hex_digits = "0123456789abcdef";
     static const char *u_hex_digits = "0123456789ABCDEF";
 
-    long long sn = (long long)sn;
     char buf[32];
     const char *digits;
     int i, d, base;
@@ -246,8 +280,14 @@ pf_emit_uint(struct pf_config *c, unsigned long long n, int neg)
     switch (c->length) {
     case PF_h:      n = (unsigned short)n;      break;
     case PF_NONE:   n = (unsigned)n;            break;
+
+#if defined(NF_SUPPORTS_LONG_LONG) || defined(NF_SUPPORTS_LONG)
     case PF_l:      n = (unsigned long)n;       break;
+#endif
+
+#if defined(NF_SUPPORTS_LONG_LONG)
     case PF_ll:     n = (unsigned long long)n;  break;
+#endif
     };
 
     /* select uppercase or lowercase character set */
@@ -298,7 +338,7 @@ pf_emit_uint(struct pf_config *c, unsigned long long n, int neg)
 
 /* emit a signed integer */
 static void
-pf_emit_int(struct pf_config *c, long long n)
+pf_emit_int(struct pf_config *c, intmax_t n)
 {
     int neg = 0;
 
@@ -307,14 +347,14 @@ pf_emit_int(struct pf_config *c, long long n)
         n *= -1;
     }
         
-    pf_emit_uint(c, (unsigned long long)n, neg);
+    pf_emit_uint(c, (uintmax_t)n, neg);
 }
 
 /* internal printf routine, operating on a pf_config struct */
 static void
 pf_cprintf(const char *fmt, struct pf_config *c)
 {
-    unsigned long long arg;
+    uintmax_t arg;
     char ch;
 
     c->state = PF_DEFAULT;
@@ -392,15 +432,24 @@ pf_cprintf(const char *fmt, struct pf_config *c)
             continue;
         }
 
+#if defined(NF_SUPPORTS_LONG_LONG) || defined(NF_SUPPORTS_LONG)
         /* handle %l */
         if (c->state == PF_LENGTH && c->length == PF_NONE && ch == 'l') {
             c->length = PF_l;
             continue;
         }
+#endif
 
+#if defined(NF_SUPPORTS_LONG_LONG)
         /* handle %ll */
         if (c->state == PF_LENGTH && c->length == PF_l && ch == 'l') {
             c->length = PF_ll;
+            continue;
+        }
+#endif
+
+        /* ignore any uhnandled %l, e.g. if the platform doesn't support them */
+        if (c->state == PF_LENGTH && ch == 'l') {
             continue;
         }
 
@@ -418,7 +467,7 @@ pf_cprintf(const char *fmt, struct pf_config *c)
         if (c->state == PF_CONV && ch == 'd') {
             c->conv = PF_d;
             arg = pf_get_arg(c);
-            pf_emit_int(c, (long long)arg);
+            pf_emit_int(c, (intmax_t)arg);
             c->state = PF_DEFAULT;
             continue;
         }
@@ -427,7 +476,7 @@ pf_cprintf(const char *fmt, struct pf_config *c)
         if (c->state == PF_CONV && ch == 'u') {
             c->conv = PF_u;
             arg = pf_get_arg(c);
-            pf_emit_uint(c, (unsigned long long)arg, 0);
+            pf_emit_uint(c, (uintmax_t)arg, 0);
             c->state = PF_DEFAULT;
             continue;
         }
@@ -436,7 +485,7 @@ pf_cprintf(const char *fmt, struct pf_config *c)
         if (c->state == PF_CONV && ch == 'x') {
             c->conv = PF_x;
             arg = pf_get_arg(c);
-            pf_emit_uint(c, (unsigned long long)arg, 0);
+            pf_emit_uint(c, (uintmax_t)arg, 0);
             c->state = PF_DEFAULT;
             continue;
         }
@@ -445,7 +494,7 @@ pf_cprintf(const char *fmt, struct pf_config *c)
         if (c->state == PF_CONV && ch == 'X') {
             c->conv = PF_X;
             arg = pf_get_arg(c);
-            pf_emit_uint(c, (unsigned long long)arg, 0);
+            pf_emit_uint(c, (uintmax_t)arg, 0);
             c->state = PF_DEFAULT;
             continue;
         }

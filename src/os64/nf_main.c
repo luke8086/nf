@@ -12,7 +12,7 @@
 #include "../nf_cmmn.h"
 
 /* local functions */
-static void nf_chattr(uint8_t attr);
+static void nf_chattr(unsigned char attr);
 static void nf_display_prompt(struct nf_machine *m);
 static int nf_get_char(char *ch, int fd);
 ssize_t nf_get_line(char *buf, size_t size, int *eof, int fd);
@@ -21,7 +21,7 @@ static int nf_run(int argc, char **argv);
 
 /* set current char attribute */
 static void
-nf_chattr(uint8_t attr)
+nf_chattr(unsigned char attr)
 {
     nf_printf("\x1b\x04%c", attr);
 }

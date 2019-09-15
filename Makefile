@@ -1,4 +1,4 @@
-CFLAGS = -Wall -pedantic -std=c11 -DNF_PLAT_POSIX -DNF_PRINTF -Wno-unused-function
+CFLAGS = -Wall -pedantic -std=c11 -DNF_PLAT_POSIX -DNF_SUPPORTS_LONG_LONG -Wno-unused-function
 LDFLAGS = -lreadline
 CC = clang
 

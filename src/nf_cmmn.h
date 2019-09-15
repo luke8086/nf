@@ -10,7 +10,6 @@
 #ifndef _NF_CMMN_H_
 #define _NF_CMMN_H_
 
-#include <stdint.h>
 #include <stdarg.h>
 
 enum {
@@ -22,13 +21,38 @@ enum {
     NF_LINE_BUF_SIZE   = 1024
 };
 
-#ifdef __SIZE_TYPE__
+#if defined(__SIZE_TYPE__)
 typedef __SIZE_TYPE__ size_t;
+#elif defined(NF_SUPPORTS_LONG_LONG)
+typedef unsigned long long size_t;
+#elif defined(NF_SUPPORTS_LONG)
+typedef unsigned long size_t;
 #else
-typedef uint64_t size_t;
+typedef unsigned size_t;
 #endif
 
-typedef int64_t nf_cell_t;
+#if defined(__UINTMAX_TYPE__)
+typedef __UINTMAX_TYPE__ uintmax_t;
+#elif defined(NF_SUPPORTS_LONG_LONG)
+typedef unsigned long long uintmax_t;
+#elif defined(NF_SUPPORTS_LONG)
+typedef unsigned long uintmax_t;
+#else
+typedef unsigned uintmax_t;
+#endif
+
+
+#if defined(__INTMAX_TYPE__)
+typedef __INTMAX_TYPE__ intmax_t;
+#elif defined(NF_SUPPORTS_LONG_LONG)
+typedef long long intmax_t;
+#elif defined(NF_SUPPORTS_LONG)
+typedef long intmax_t;
+#else
+typedef int intmax_t;
+#endif
+
+typedef intmax_t nf_cell_t;
 
 /* interpreter tokens */
 
@@ -181,7 +205,7 @@ struct nf_machine *nf_init_machine(int argc, char **argv);
 
 /* nf_snprintf.c */
 int nf_asnprintf(char *buf, size_t nbyte, const char *fmt,
-                 unsigned long long (arg_fn)(void *), void *payload);
+                 uintmax_t (arg_fn)(void *), void *payload);
 int nf_vsnprintf(char *buf, size_t nbyte, const char *fmt,
                  va_list va);
 
