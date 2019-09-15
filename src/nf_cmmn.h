@@ -174,10 +174,6 @@ char *nf_parse_token(char *src, struct nf_token *tok);
 /* nf_libc.c */
 void *nf_malloc(size_t size);
 void nf_free(void *ptr);
-void *nf_memcpy(void *dest, const void *src, size_t n);
-size_t nf_strlen(const char *s1);
-int nf_strcmp(const char *s1, const char *s2);
-char *nf_strncpy(char *dest, const char *src, size_t n);
 void nf_exit(int code);
 int nf_printf(const char *format, ...);
 
@@ -208,6 +204,12 @@ int nf_asnprintf(char *buf, size_t nbyte, const char *fmt,
                  uintmax_t (arg_fn)(void *), void *payload);
 int nf_vsnprintf(char *buf, size_t nbyte, const char *fmt,
                  va_list va);
+
+/* nf_str.c */
+void *nf_memcpy(void *dest, const void *src, size_t n);
+size_t nf_strlen(const char *s1);
+int nf_strcmp(const char *s1, const char *s2);
+char *nf_strncpy(char *dest, const char *src, size_t n);
 
 /* nf_word.c */
 struct nf_word *nf_init_word(struct nf_machine *m, char *name,
