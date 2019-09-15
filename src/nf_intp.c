@@ -124,7 +124,7 @@ nf_intp_token(struct nf_machine *m, struct nf_token *t)
     case NF_TOKEN_NUMBER:
         return nf_intp_number(m, t);
 
-    case NF_TOKEN_WORD: 
+    case NF_TOKEN_WORD:
         return nf_intp_word(m, t);
 
     default:

@@ -146,7 +146,7 @@ nf_get_line(char *buf, size_t size, int *eof, int fd)
         else if (intv && ch == '\b' && n == 0) {
             continue;
         }
-    
+
         /* backspace in interactive mode with previous characters present */
         else if (intv && ch == '\b' && n > 0) {
             --n;
@@ -222,7 +222,7 @@ nf_interpret(struct nf_machine *m, char *path)
         if (size <= 0) {
             continue;
         }
-        
+
         /* interpret line. in file mode, break on error */
         if (nf_intp_line(m, line) && !intv) {
             ret = -1;

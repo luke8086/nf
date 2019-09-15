@@ -346,7 +346,7 @@ pf_emit_int(struct pf_config *c, intmax_t n)
         neg = 1;
         n *= -1;
     }
-        
+
     pf_emit_uint(c, (uintmax_t)n, neg);
 }
 
@@ -520,7 +520,7 @@ pf_cprintf(const char *fmt, struct pf_config *c)
         /* invalid format */
         c->error = 1;
     }
-    
+
     pf_emit(c, 0);
 }
 
