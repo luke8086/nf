@@ -41,6 +41,6 @@ test: $(NF)
 
 # Launch the x86 version in qemu, unrelated to all the code above
 qemu:
-	cat $(OBJDIR)/NF_BOOT.BIN $(OBJDIR)/NF.COM > $(OBJDIR)/nf_x86.img
+	cat $(OBJDIR)/NF_BOOT.BIN $(OBJDIR)/NF_BOOT.BIN $(OBJDIR)/NF.COM > $(OBJDIR)/nf_x86.img
 	qemu-system-i386 -drive format=raw,file=$(OBJDIR)/nf_x86.img
 

@@ -19,7 +19,7 @@ sti
 ; read 72 sectors from disk to 0x10100, dl is already set by BIOS
 mov ax, 0x0248
 mov bx, 0x0100
-mov cx, 0x0002
+mov cx, 0x0003
 mov dh, 0x00
 int 0x13
 
@@ -29,6 +29,12 @@ mov [0], word 0xcafe
 ; jump to the COM file
 jmp 0x1000:0x100
 
+; MBR partition table with a single bootable partition
+times 0x1be - ($ - $$) db 0
+db 0x80, 0x00, 0x02, 0x00
+db 0x01, 0x00, 0x3f, 0x00
+dd 0x01, 0x7f
+
 ; boot-loader designator
-times 510 - ($ - $$) db 0
+times 0x1fe - ($ - $$) db 0
 dw 0b10101010_01010101
