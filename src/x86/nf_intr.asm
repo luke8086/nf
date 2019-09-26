@@ -55,8 +55,7 @@ intr_int:
 
     ; store FLAGS to regs_t
     pushf
-    pop ax
-    mov [si+14], ax
+    pop word [si+14]
 
     ; restore previously preserved non-volatile registers
     pop di
