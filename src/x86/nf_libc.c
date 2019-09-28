@@ -94,6 +94,8 @@ nf_readline(void)
             nf_putc(' ');
             nf_putc(ch);
             buf--;
+        } else if (ch == 0x08) {
+            /* pass */
         } else if (ch == 0x0d) {
             nf_printf("\n");
             *buf = 0;
