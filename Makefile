@@ -1,46 +1,84 @@
-CFLAGS = -Wall -pedantic -std=c11 -DNF_PLAT_POSIX -DNF_SUPPORTS_LONG_LONG -Wno-unused-function
-LDFLAGS = -lreadline
-CC = clang
+SRCDIR = SRC
+OBJDIR = BUILD
 
-SRCDIR = ./src
-OBJDIR = ./build
-TESTDIR = ./tests
-
+CC = TCC
+CFLAGS = -mt -u- -g1 -c -I$(SRCDIR) -n$(OBJDIR)
 INCLUDES = $(SRCDIR)/nf_cmmn.h
 
-OBJS = \
-	$(OBJDIR)/nf_stmt.o \
-	$(OBJDIR)/nf_intp.o \
-	$(OBJDIR)/nf_lex.o \
-	$(OBJDIR)/nf_mach.o \
-	$(OBJDIR)/nf_base.o \
-	$(OBJDIR)/nf_word.o \
-	$(OBJDIR)/nf_prtf.o \
-	$(OBJDIR)/nf_str.o \
-	$(OBJDIR)/posix/nf_main.o \
-	$(OBJDIR)/posix/nf_libc.o \
+AS = NASM
+ASFLAGS = -f obj
 
-NF = $(OBJDIR)/nf
+LD = TLINK
 
-all: $(NF)
+OBJS = $(OBJDIR)\NF_BASE.OBJ $(OBJDIR)\NF_INTP.OBJ $(OBJDIR)\NF_LEX.OBJ \
+        $(OBJDIR)\NF_MACH.OBJ $(OBJDIR)\NF_PRTF.OBJ $(OBJDIR)\NF_STMT.OBJ \
+        $(OBJDIR)\NF_STR.OBJ $(OBJDIR)\NF_WORD.OBJ $(OBJDIR)\NF_LIBC.OBJ \
+        $(OBJDIR)\NF_MAIN.OBJ $(OBJDIR)\NF_STRT.OBJ $(OBJDIR)\NF_WORDS.OBJ \
+        $(OBJDIR)\NF_INTR.OBJ
 
-$(OBJDIR)/posix/%.o: $(SRCDIR)/posix/%.c $(INCLUDES)
-	$(CC) $(CFLAGS) -c $< -o $@
-
-$(OBJDIR)/%.o: $(SRCDIR)/%.c $(INCLUDES)
-	$(CC) $(CFLAGS) -c $< -o $@
-
-$(NF): $(OBJS)
-	$(CC) $(LDFLAGS) $(OBJS) -o $(NF)
+all: $(OBJDIR)\NF.COM $(OBJDIR)\NF_DISK.IMG
 
 clean:
-	rm -f $(OBJDIR)/*.o $(OBJDIR)/posix/*.o $(OBJDIR)/*.img
+	-del $(OBJDIR)\*.COM
+	-del $(OBJDIR)\*.OBJ
+	-del $(OBJDIR)\*.MAP
+	-del $(OBJDIR)\*.BIN
+	-del $(OBJDIR)\*.EXE
+	-del $(OBJDIR)\*.IMG
 
-test: $(NF)
-	$(TESTDIR)/tests.py
+# FIXME: Borland Make 3.0 apparently doesn't support
+# wildcard rules for files in subdirectories. A cleaner solution
+# needs to be investigated instead of creating separate rules
+# for every file
 
-# Launch the x86 version in qemu, unrelated to all the code above
-qemu:
-	cat $(OBJDIR)/NF_BOOT.BIN $(OBJDIR)/NF_BOOT.BIN $(OBJDIR)/NF.COM > $(OBJDIR)/nf_x86.img
-	qemu-system-i386 -drive format=raw,file=$(OBJDIR)/nf_x86.img
+$(OBJDIR)\NF.COM: $(OBJS)
+	$(LD) @$(SRCDIR)\TLINK.RSP
+
+$(OBJDIR)\NF_BOOT.BIN: $(SRCDIR)\NF_BOOT.ASM
+	$(AS) $(SRCDIR)\$&.ASM -o $(OBJDIR)\$&.BIN
+
+$(OBJDIR)\NF_FCOPY.EXE: $(SRCDIR)\NF_FCOPY.C
+	$(CC) -n$(OBJDIR) $(SRCDIR)\$&.C
+
+$(OBJDIR)\NF_DISK.IMG: $(OBJDIR)\NF_BOOT.BIN $(OBJDIR)\NF.COM $(OBJDIR)\NF_FCOPY.EXE
+	$(OBJDIR)\NF_FCOPY.EXE $(OBJDIR)\NF_BOOT.BIN $(OBJDIR)\NF_BOOT.BIN $(OBJDIR)\NF.COM $(OBJDIR)\NF_DISK.IMG
+
+$(OBJDIR)\NF_BASE.OBJ: $(SRCDIR)\NF_BASE.C $(INCLUDES)
+	$(CC) $(CFLAGS) $(SRCDIR)\$&.C
+
+$(OBJDIR)\NF_INTP.OBJ: $(SRCDIR)\NF_INTP.C $(INCLUDES)
+	$(CC) $(CFLAGS) $(SRCDIR)\$&.C
+
+$(OBJDIR)\NF_LEX.OBJ: $(SRCDIR)\NF_LEX.C $(INCLUDES)
+	$(CC) $(CFLAGS) $(SRCDIR)\$&.C
+
+$(OBJDIR)\NF_MACH.OBJ: $(SRCDIR)\NF_MACH.C $(INCLUDES)
+	$(CC) $(CFLAGS) $(SRCDIR)\$&.C
+
+$(OBJDIR)\NF_PRTF.OBJ: $(SRCDIR)\NF_PRTF.C $(INCLUDES)
+	$(CC) $(CFLAGS) $(SRCDIR)\$&.C
+
+$(OBJDIR)\NF_STMT.OBJ: $(SRCDIR)\NF_STMT.C $(INCLUDES)
+	$(CC) $(CFLAGS) $(SRCDIR)\$&.C
+
+$(OBJDIR)\NF_STR.OBJ: $(SRCDIR)\NF_STR.C $(INCLUDES)
+	$(CC) $(CFLAGS) $(SRCDIR)\$&.C
+
+$(OBJDIR)\NF_WORD.OBJ: $(SRCDIR)\NF_WORD.C $(INCLUDES)
+	$(CC) $(CFLAGS) $(SRCDIR)\$&.C
+
+$(OBJDIR)\NF_LIBC.OBJ: $(SRCDIR)\NF_LIBC.C $(INCLUDES)
+	$(CC) $(CFLAGS) $(SRCDIR)\$&.C
+
+$(OBJDIR)\NF_WORDS.OBJ: $(SRCDIR)\NF_WORDS.C $(INCLUDES)
+	$(CC) $(CFLAGS) $(SRCDIR)\$&.C
+
+$(OBJDIR)\NF_MAIN.OBJ: $(SRCDIR)\NF_MAIN.C $(INCLUDES)
+	$(CC) $(CFLAGS) $(SRCDIR)\$&.C
+
+$(OBJDIR)\NF_INTR.OBJ: $(SRCDIR)\NF_INTR.ASM
+	$(AS) $(ASFLAGS) $(SRCDIR)\$&.ASM -o $(OBJDIR)\$&.OBJ
+
+$(OBJDIR)\NF_STRT.OBJ: $(SRCDIR)\NF_STRT.ASM
+	$(AS) $(ASFLAGS) $(SRCDIR)\$&.ASM -o $(OBJDIR)\$&.OBJ
 
