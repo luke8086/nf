@@ -13,9 +13,13 @@
 char *nf_readline(void);
 void nf_define_x86_words(struct nf_machine *);
 
+/* embedded init code (from nf_strt.asm) */
+extern void *nf_init_code;
+extern void *nf_init_code_end;
+
 /* local functions */
 static void nf_print_prompt(struct nf_machine *m);
-static void nf_interpret_int(struct nf_machine *);
+static void nf_interpret_init(struct nf_machine *);
 
 /* print fancy prompt */
 static void
@@ -62,19 +66,33 @@ nf_print_prompt(struct nf_machine *m)
     nf_printf("\n\xc0>>> ");
 }
 
-/* interactive interpreter loop */
+/* interpret embedded init code line by line */
 static void
-nf_interpret_int(struct nf_machine *m)
+nf_interpret_init(struct nf_machine *m)
 {
-    char *line;
+    const char *p = (const char *)&nf_init_code;
+    const char *end = (const char *)&nf_init_code_end;
+    char buf[NF_LINE_BUF_SIZE];
+    int i;
 
-    for (;;) {
-        nf_print_prompt(m);
-        line = nf_readline();
-        (void)nf_intp_line(m, line);
+    while (p < end) {
+        /* copy one line into buf */
+        i = 0;
+        while (p < end && *p != '\n' && *p != '\r' && i < NF_LINE_BUF_SIZE - 1) {
+            buf[i++] = *p++;
+        }
+        buf[i] = '\0';
+
+        /* skip line endings */
+        while (p < end && (*p == '\r' || *p == '\n')) {
+            ++p;
+        }
+
+        /* interpret the line */
+        if (i > 0) {
+            nf_intp_line(m, buf);
+        }
     }
-
-    /* NOTREACHED */
 }
 
 /* main entry point */
@@ -83,6 +101,9 @@ main(void)
 {
     static char *argv[1] = { 0 };
     struct nf_machine *m;
+    char *line;
+
+    nf_printf("\n");
 
     m = nf_init_machine(0, argv);
 
@@ -94,7 +115,15 @@ main(void)
     /* setup x86-specific words */
     nf_define_x86_words(m);
 
-    nf_interpret_int(m);
+    /* interpret embedded init code */
+    nf_interpret_init(m);
+
+    /* interactive interpreter loop */
+    for (;;) {
+        nf_print_prompt(m);
+        line = nf_readline();
+        (void)nf_intp_line(m, line);
+    }
 
     /* NOTREACHED */
 }

@@ -19,6 +19,15 @@ extern main
     jmp main
 
 section _DATA class=DATA
+
+global nf_init_code
+global nf_init_code_end
+
+nf_init_code:
+    incbin "SRC\NF_INIT.NF"
+nf_init_code_end:
+    db 0
+
 section _BSS class=BSS
 section _BSSEND class=BSSEND
 
