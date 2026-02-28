@@ -56,7 +56,7 @@ nf_getx(void)
 
 /* print a single character to the screen */
 void
-nf_putc(char c)
+nf_putc(unsigned char c)
 {
     struct nf_regs regs;
     regs.ax = 0x0e00 | c;
