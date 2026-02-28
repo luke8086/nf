@@ -7,6 +7,8 @@
 ; x86/nf_strt.asm - startup code
 ;
 
+[cpu 8086]
+
 section _TEXT class=CODE
 
 resb 0x100

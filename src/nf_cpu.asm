@@ -7,6 +7,8 @@
 ; x86/nf_cpu.asm - low-level functions
 ;
 
+[cpu 8086]
+
 section _TEXT class=CODE
 
 ; struct nf_regs { int ax, bx, cx, dx, bp, di, si, flags };
