@@ -107,7 +107,7 @@ ok
 
 **Loops**
 ```
->>> 5 do
+>>> 5 begin
 ...     dup
 ... while
 ...     dup .
@@ -116,7 +116,7 @@ ok
 5 4 3 2 1
 >>>
 
->>> 0 do
+>>> 0 begin
 ...     dup .
 ...     1 + dup
 ... 5 == until cr

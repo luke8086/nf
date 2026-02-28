@@ -94,7 +94,7 @@ enum nf_stmt_type {
     NF_STMT_IF,
     NF_STMT_ELSE,
     NF_STMT_THEN,
-    NF_STMT_DO,
+    NF_STMT_BEGIN,
     NF_STMT_WHILE,
     NF_STMT_REPEAT,
     NF_STMT_UNTIL

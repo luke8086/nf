@@ -147,17 +147,17 @@ nf_stmt_then(struct nf_machine *m)
     return 0;
 }
 
-/* 'do' ( -- 'do' ) */
+/* 'begin' ( -- 'begin' ) */
 static int
-nf_stmt_do(struct nf_machine *m)
+nf_stmt_begin(struct nf_machine *m)
 {
     /* if interpreting, compile up to 'until' or 'repeat' and exec */
     if (m->state != NF_STATE_COMPILE) {
         nf_comp_start(m);
     }
 
-    /* push a 'do' statement pointing to the next instruction */
-    if (nf_stmt_push(m, NF_STMT_DO, m->comp_ip)) {
+    /* push a 'begin' statement pointing to the next instruction */
+    if (nf_stmt_push(m, NF_STMT_BEGIN, m->comp_ip)) {
         nf_error(("statement stack overflow"));
         return -1;
     };
@@ -165,7 +165,7 @@ nf_stmt_do(struct nf_machine *m)
     return 0;
 }
 
-/* 'while' ( 'do' -- 'do' ) */
+/* 'while' ( 'begin' -- 'begin' ) */
 static int
 nf_stmt_while(struct nf_machine *m)
 {
@@ -177,9 +177,9 @@ nf_stmt_while(struct nf_machine *m)
         return -1;
     }
 
-    /* make sure the last statement was 'do' */
+    /* make sure the last statement was 'begin' */
     s = nf_stmt_get(m, 0);
-    if (!s || s->type != NF_STMT_DO) {
+    if (!s || s->type != NF_STMT_BEGIN) {
         nf_error(("syntax error"));
         return -1;
     }
@@ -218,15 +218,15 @@ nf_stmt_repeat(struct nf_machine *m)
     }
     s->ip->value =  m->comp_ip - s->ip + 1;
 
-    /* fetch the last 'do' statement */
+    /* fetch the last 'begin' statement */
     s = nf_stmt_pop(m);
-    if (!s || s->type != NF_STMT_DO) {
+    if (!s || s->type != NF_STMT_BEGIN) {
         nf_error(("syntax error"));
         return -1;
     }
 
     /* insert unconditional branch instruction */
-    /* pointing to the address stored in 'do' */
+    /* pointing to the address stored in 'begin' */
     if (!nf_comp_instr(m, NF_OPCODE_BRANCH, s->ip - m->comp_ip)) {
         nf_error(("compilation buffer overflow"));
         return -1;
@@ -257,15 +257,15 @@ nf_stmt_until(struct nf_machine *m)
         return -1;
     }
 
-    /* fetch the last 'do' statement */
+    /* fetch the last 'begin' statement */
     s = nf_stmt_pop(m);
-    if (!s || s->type != NF_STMT_DO) {
+    if (!s || s->type != NF_STMT_BEGIN) {
         nf_error(("syntax error"));
         return -1;
     }
 
     /* insert unconditional branch instruction */
-    /* pointing to the address stored by 'do' */
+    /* pointing to the address stored by 'begin' */
     if (!nf_comp_instr(m, NF_OPCODE_BRANCH_UNLESS, s->ip - m->comp_ip)) {
         nf_error(("compilation buffer overflow"));
         return -1;
@@ -297,7 +297,7 @@ nf_define_stmt_words(struct nf_machine *m)
         NF_DECL_STMT("if", (void*)nf_stmt_if),
         NF_DECL_STMT("else", (void*)nf_stmt_else),
         NF_DECL_STMT("then", (void*)nf_stmt_then),
-        NF_DECL_STMT("do", (void*)nf_stmt_do),
+        NF_DECL_STMT("begin", (void*)nf_stmt_begin),
         NF_DECL_STMT("repeat", (void*)nf_stmt_repeat),
         NF_DECL_STMT("while", (void*)nf_stmt_while),
         NF_DECL_STMT("until", (void*)nf_stmt_until),
