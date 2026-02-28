@@ -7,7 +7,6 @@ An forth-like interactive programming environment for 8086+ PCs
 - Working DOS environment (typically through DOSBox)
 - [Turbo C 2.01](https://edn.embarcadero.com/article/20841)
 - [NASM](https://www.nasm.us/pub/nasm/releasebuilds/3.01/dos/)
-- [CWSDPMI](https://www.delorie.com/pub/djgpp/current/v2misc/csdpmi7b.zip) (for NASM)
 
 ## Building
 
