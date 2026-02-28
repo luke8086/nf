@@ -4,7 +4,7 @@
 ;
 
 ;
-; x86/nf_intr.asm - a routine for triggering software interrupts
+; x86/nf_cpu.asm - low-level functions
 ;
 
 section _TEXT class=CODE
@@ -65,3 +65,11 @@ intr_int:
     pop bp
     ret
 
+
+; void nf_reboot(void);
+global nf_reboot
+nf_reboot:
+    cli
+    mov al, 0xfe
+    out 0x64, al
+    hlt

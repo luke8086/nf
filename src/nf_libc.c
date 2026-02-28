@@ -15,6 +15,7 @@ struct nf_regs {
 };
 
 void nf_intr(int, struct nf_regs *);
+void nf_reboot(void);
 
 /* heap pointers */
 extern void *nf_heap_start;
@@ -147,6 +148,8 @@ nf_exit(char code)
         regs.ax = 0x4c00 | code;
         nf_intr(0x21, &regs);
     }
+
+    nf_reboot();
 
     for (;;) { };
     /* NOTREACHED */
