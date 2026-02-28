@@ -1,6 +1,12 @@
-# nf
+# NF
 
-An forth-like interactive programming environment for 8086+ PCs
+Forth-like interactive programming environment for 8086+ PCs.
+
+Originally written as a shell for my
+[hobby OS](https://github.com/luke8086/gentleos),
+later repurposed as a standalone bootable app.
+
+<img src="misc/screenshot1.jpg" width="400">
 
 ## Prerequisites
 
@@ -10,7 +16,7 @@ An forth-like interactive programming environment for 8086+ PCs
 
 ## Building
 
-Just run `MAKE`
+Within DOS, just run `MAKE`
 
 ## Running in DOS
 
@@ -19,7 +25,10 @@ Run `BUILD\NF.COM`
 ## Running in QEMU
 
 ```
-qemu-system-i386 -drive format=raw,file=build/NF_DISK.IMG
+mkdir -p tmp
+dd if=/dev/zero of=tmp/floppy.img bs=720k count=1
+dd if=build/NF_DISK.img of=tmp/floppy.img conv=notrunc
+qemu-system-i386 -drive format=raw,file=tmp/floppy.img
 ```
 
 ## Running on real hardware (on your own risk)
@@ -32,112 +41,4 @@ dd if=build/NF_DISK.IMG of=<your USB stick>
 
 ## Usage
 
-**Printing**
-```
->>> cr
-
->>>
-
->>> 1 2 3 . . . cr
-3 2 1
->>>
-
->>> 1 2 3 4 5
->>> .s
-1 2 3 4 5
->>>
-
->>> "rld!!!" "llo wo" "He" "%s%s%s\n" printf . cr
-Hello world!!!
-15
->>>
-```
-
-**Stack manipulation**
-```
->>> 1 2 3 .s
-1 2 3
->>> dup .s
-1 2 3 3
->>> drop .s
-1 2 3
->>> swap .s
-1 3 2
->>> rot .s
-3 2 1
->>> over .s
-3 2 1 2
->>>
-```
-
-**Operators**
-```
->>> 4 2 >= . cr
-1
->>> 4 2 < . cr
-0
->>> 1 0 && . cr
-0
->>> 1 2 || . cr
-1
->>> 0 ! . cr
-1
->>> 1 2 & . cr
-0
->>> 1 2 | . cr
-3
->>>
-```
-
-**Conditionals**
-```
->>> 1 2 < if
-...   "ok\n" printf
-... then
-ok
-
->>> 4 6 > if
-...     "err\n" printf
-... else
-...     "ok\n" printf
-... then
-ok
->>>
-```
-
-**Loops**
-```
->>> 5 begin
-...     dup
-... while
-...     dup .
-...     1 -
-... repeat cr
-5 4 3 2 1
->>>
-
->>> 0 begin
-...     dup .
-...     1 + dup
-... 5 == until cr
-0 1 2 3 4
->>>
-```
-
-**Variables and subroutines**
-```
->>> 123 "x" var
->>> x "x = %d\n" printf
-x = 123
->>> 321 "x" :=
->>> x "x = %d\n" printf
-x = 321
->>>
-
->>> :
-...   2 *
-... ; "double" def
->>> 5 double . cr
-10
->>>
-```
+See [USAGE.md](USAGE.md)
