@@ -175,6 +175,8 @@ char *nf_parse_token(char *src, struct nf_token *tok);
 void *nf_malloc(size_t size);
 void nf_free(void *ptr);
 void nf_exit(char code);
+int nf_getx(void);
+void nf_putc(char c);
 int nf_printf(const char *format, ...);
 
 /* nf_stmt.c */

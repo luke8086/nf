@@ -24,6 +24,10 @@ nf_interpret_int(struct nf_machine *m)
     int v;
 
     for (;;) {
+        if (nf_getx() != 0) {
+            nf_printf("\n");
+        }
+
         prompt = m->state == NF_STATE_INTERPRET ? ">>> " : "... ";
         nf_printf("%s", prompt);
 

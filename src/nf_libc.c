@@ -25,7 +25,6 @@ static char *nf_heap_ptr = (char *)&nf_heap_start;
 static char nf_readline_buf[NF_READLINE_BUF_SIZE];
 
 /* local functions */
-static void nf_putc(char);
 static void nf_puts(char *);
 
 /* allocate chunk of memory on the heap */
@@ -44,8 +43,19 @@ nf_free(void *ptr)
     (void)ptr;
 }
 
+/* get current cursor x position */
+int
+nf_getx(void)
+{
+    struct nf_regs regs;
+    regs.ax = 0x0300;
+    regs.bx = 0x0000;
+    nf_intr(0x10, &regs);
+    return regs.dx & 0xff;
+}
+
 /* print a single character to the screen */
-static void
+void
 nf_putc(char c)
 {
     struct nf_regs regs;
