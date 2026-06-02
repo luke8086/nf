@@ -6,7 +6,7 @@ Originally written as a shell for my
 [hobby OS](https://github.com/luke8086/gentleos),
 later repurposed as a standalone bootable app.
 
-<img src="misc/screenshot1.jpg" width="400">
+<img src="misc/screenshot1.webp" width="400">
 
 ## Prerequisites
 
